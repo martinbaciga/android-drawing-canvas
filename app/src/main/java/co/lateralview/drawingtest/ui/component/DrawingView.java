@@ -54,6 +54,8 @@ public class DrawingView extends View
 
 	public void clearCanvas()
 	{
+		mPaths.clear();
+		mUndonePaths.clear();
 		mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
 		invalidate();
 	}
