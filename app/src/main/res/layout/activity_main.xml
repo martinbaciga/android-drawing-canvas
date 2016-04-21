@@ -1,45 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
     <co.lateralview.drawingtest.ui.component.DrawingView
         android:id="@+id/main_drawing_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.85"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="30dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="0dp"
+        android:layout_weight="0.15"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/colorPrimary">
 
-        <TextView
-            android:id="@+id/main_back"
+        <ImageView
+            android:id="@+id/main_fill_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
-            android:layout_marginRight="10dp"
-            android:textSize="20sp"
+            android:src="@drawable/ic_format_color_fill_white_24dp"
+            android:padding="15dp"
             android:clickable="true"
-            android:textAllCaps="true"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
-        <TextView
-            android:id="@+id/main_forward"
+        <ImageView
+            android:id="@+id/main_color_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forward"
-            android:textSize="20sp"
+            android:src="@drawable/ic_palette_white_24dp"
+            android:padding="15dp"
             android:clickable="true"
-            android:textAllCaps="true"/>
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
+            android:id="@+id/main_stroke_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_gesture_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
+            android:id="@+id/main_undo_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_undo_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
+            android:id="@+id/main_redo_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_redo_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

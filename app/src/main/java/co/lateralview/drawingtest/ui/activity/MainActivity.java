@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
@@ -18,9 +18,13 @@ import co.lateralview.drawingtest.ui.dialog.StrokeSelectorDialog;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
 	private DrawingView mDrawingView;
-	private TextView mBackTextView;
-	private TextView mForwardTextView;
+	private ImageView mFillBackgroundImageView;
+	private ImageView mColorImageView;
+	private ImageView mStrokeImageView;
+	private ImageView mUndoImageView;
+	private ImageView mRedoImageView;
 
+	private int mCurrentBackgroundColor;
 	private int mCurrentColor;
 	private int mCurrentStroke;
 
@@ -45,12 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	{
 		switch (item.getItemId())
 		{
-			case R.id.action_color:
-				startColorPickerDialog();
-				break;
-			case R.id.action_stroke:
-				startStrokeSelectorDialog();
-				break;
 			case R.id.action_clear:
 				mDrawingView.clearCanvas();
 				break;
@@ -61,25 +59,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void initControls()
 	{
-		mBackTextView = (TextView) findViewById(R.id.main_back);
-		mBackTextView.setOnClickListener(this);
-		mForwardTextView = (TextView) findViewById(R.id.main_forward);
-		mForwardTextView.setOnClickListener(this);
+		mFillBackgroundImageView = (ImageView) findViewById(R.id.main_fill_iv);
+		mFillBackgroundImageView.setOnClickListener(this);
+		mColorImageView = (ImageView) findViewById(R.id.main_color_iv);
+		mColorImageView.setOnClickListener(this);
+		mStrokeImageView = (ImageView) findViewById(R.id.main_stroke_iv);
+		mStrokeImageView.setOnClickListener(this);
+		mUndoImageView = (ImageView) findViewById(R.id.main_undo_iv);
+		mUndoImageView.setOnClickListener(this);
+		mRedoImageView = (ImageView) findViewById(R.id.main_redo_iv);
+		mRedoImageView.setOnClickListener(this);
 	}
 
 	private void initDrawingView()
 	{
 		mDrawingView = (DrawingView) findViewById(R.id.main_drawing_view);
 
+		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
 		mCurrentColor = ContextCompat.getColor(this, R.color.flamingo);
 		mCurrentStroke = 10;
+
+		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
 		mDrawingView.setPaintColor(mCurrentColor);
 		mDrawingView.setPaintStrokeWidth(mCurrentStroke);
 	}
 
+	private void startFillBackgroundDialog()
+	{
+		int[] colors = getResources().getIntArray(R.array.palette);
+
+		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
+				colors,
+				mCurrentBackgroundColor,
+				5,
+				ColorPickerDialog.SIZE_SMALL);
+
+		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+
+			@Override
+			public void onColorSelected(int color) {
+				mCurrentBackgroundColor = color;
+				mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
+			}
+
+		});
+
+		dialog.show(getFragmentManager(), "ColorPickerDialog");
+	}
+
 	private void startColorPickerDialog()
 	{
-		int[] colors = getResources().getIntArray(R.array.default_rainbow);
+		int[] colors = getResources().getIntArray(R.array.palette);
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
@@ -122,11 +152,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	{
 		switch (v.getId())
 		{
-			case R.id.main_back:
-				mDrawingView.goBack();
+			case R.id.main_fill_iv:
+				startFillBackgroundDialog();
 				break;
-			case R.id.main_forward:
-				mDrawingView.goForward();
+			case R.id.main_color_iv:
+				startColorPickerDialog();
+				break;
+			case R.id.main_stroke_iv:
+				startStrokeSelectorDialog();
+				break;
+			case R.id.main_undo_iv:
+				mDrawingView.undo();
+				break;
+			case R.id.main_redo_iv:
+				mDrawingView.redo();
 				break;
 		}
 	}
