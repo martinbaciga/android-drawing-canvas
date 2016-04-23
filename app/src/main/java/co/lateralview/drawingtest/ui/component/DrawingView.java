@@ -1,6 +1,5 @@
 package co.lateralview.drawingtest.ui.component;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -70,12 +69,6 @@ public class DrawingView extends View
 	{
 		mStrokeWidth = strokeWidth;
 		mDrawPaint.setStrokeWidth(mStrokeWidth);
-	}
-
-	public void setBackgroundColor(Activity activity, int color)
-	{
-		View view = activity.getWindow().getDecorView();
-		view.setBackgroundColor(color);
 	}
 
 	public Bitmap getBitmap()
