@@ -42,6 +42,12 @@ public class DrawingView extends View
 	private void init()
 	{
 		mDrawPath = new Path();
+		initPaint();
+		mCanvasPaint = new Paint(Paint.DITHER_FLAG);
+	}
+
+	private void initPaint()
+	{
 		mDrawPaint = new Paint();
 		mDrawPaint.setColor(mPaintColor);
 		mDrawPaint.setAntiAlias(true);
@@ -49,8 +55,6 @@ public class DrawingView extends View
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-
-		mCanvasPaint = new Paint(Paint.DITHER_FLAG);
 	}
 
 	public void clearCanvas()
@@ -144,6 +148,7 @@ public class DrawingView extends View
 				mPaths.add(mDrawPath);
 				mPaints.add(mDrawPaint);
 				mDrawPath = new Path();
+				initPaint();
 				break;
 			default:
 				return false;
