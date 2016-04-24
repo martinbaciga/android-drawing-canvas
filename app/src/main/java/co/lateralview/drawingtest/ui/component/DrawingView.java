@@ -79,10 +79,10 @@ public class DrawingView extends View
 		mDrawPaint.setStrokeWidth(mStrokeWidth);
 	}
 
-	public Bitmap getBitmap()
+	/*public Bitmap getBitmap()
 	{
 		return mCanvasBitmap;
-	}
+	}*/
 
 	public void undo()
 	{
