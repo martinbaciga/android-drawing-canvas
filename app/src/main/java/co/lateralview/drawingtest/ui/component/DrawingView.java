@@ -29,7 +29,9 @@ public class DrawingView extends View
 	private Bitmap mCanvasBitmap;
 
 	private ArrayList<Path> mPaths = new ArrayList<>();
+	private ArrayList<Paint> mPaints = new ArrayList<>();
 	private ArrayList<Path> mUndonePaths = new ArrayList<>();
+	private ArrayList<Paint> mUndonePaints = new ArrayList<>();
 
 	public DrawingView(Context context, AttributeSet attrs)
 	{
@@ -54,7 +56,9 @@ public class DrawingView extends View
 	public void clearCanvas()
 	{
 		mPaths.clear();
+		mPaints.clear();
 		mUndonePaths.clear();
+		mUndonePaints.clear();
 		mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
 		invalidate();
 	}
@@ -80,7 +84,8 @@ public class DrawingView extends View
 	{
 		if (mPaths.size() > 0)
 		{
-			mUndonePaths.add(mPaths.remove(mPaths.size()-1));
+			mUndonePaths.add(mPaths.remove(mPaths.size() - 1));
+			mUndonePaints.add(mPaints.remove(mPaints.size() - 1));
 			invalidate();
 		}
 	}
@@ -89,7 +94,8 @@ public class DrawingView extends View
 	{
 		if (mUndonePaths.size() > 0)
 		{
-			mPaths.add(mUndonePaths.remove(mUndonePaths.size()-1));
+			mPaths.add(mUndonePaths.remove(mUndonePaths.size() - 1));
+			mPaints.add(mUndonePaints.remove(mUndonePaints.size() - 1));
 			invalidate();
 		}
 	}
@@ -97,13 +103,15 @@ public class DrawingView extends View
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
+		//canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
 		canvas.drawPath(mDrawPath, mDrawPaint);
 
-		/*for (Path p : mPaths)
+		int i = 0;
+		for (Path p : mPaths)
 		{
-			canvas.drawPath(p, mDrawPaint);
-		}*/
+			canvas.drawPath(p, mPaints.get(i));
+			i++;
+		}
 	}
 
 	@Override
@@ -134,7 +142,8 @@ public class DrawingView extends View
 				mDrawPath.lineTo(touchX, touchY);
 				mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
 				mPaths.add(mDrawPath);
-				mDrawPath.reset();
+				mPaints.add(mDrawPaint);
+				mDrawPath = new Path();
 				break;
 			default:
 				return false;
