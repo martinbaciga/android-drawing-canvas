@@ -28,9 +28,7 @@ public class DrawingView extends View
 
 	// Set default values
 	private int mBackgroundColor = 0xFFFFFFFF;
-
 	private int mPaintColor = 0xFF660000;
-
 	private int mStrokeWidth = 10;
 
 	public DrawingView(Context context, AttributeSet attrs)
@@ -78,7 +76,6 @@ public class DrawingView extends View
 	protected void onDraw(Canvas canvas)
 	{
 		drawBackground(canvas);
-
 		drawPaths(canvas);
 
 		canvas.drawPath(mDrawPath, mDrawPaint);

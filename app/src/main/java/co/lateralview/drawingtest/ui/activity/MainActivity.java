@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 
 		ButterKnife.bind(this);
-		
+
 		initDrawingView();
 	}
 
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 	private void initDrawingView()
 	{
 		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
-		mCurrentColor = ContextCompat.getColor(this, R.color.flamingo);
+		mCurrentColor = ContextCompat.getColor(this, android.R.color.black);
 		mCurrentStroke = 10;
 
 		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
