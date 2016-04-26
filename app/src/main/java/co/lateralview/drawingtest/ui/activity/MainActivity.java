@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 	private int mCurrentBackgroundColor;
 	private int mCurrentColor;
 	private int mCurrentStroke;
+	private static final int MAX_STROKE_WIDTH = 50;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void startStrokeSelectorDialog()
 	{
-		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, 50);
+		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, MAX_STROKE_WIDTH);
 
 		dialog.setOnStrokeSelectedListener(new StrokeSelectorDialog.OnStrokeSelectedListener()
 		{
@@ -162,7 +163,8 @@ public class MainActivity extends AppCompatActivity
 
 	private void requestPermissionsAndSaveBitmap()
 	{
-		if (PermissionManager.checkWriteStoragePermissions(this)) {
+		if (PermissionManager.checkWriteStoragePermissions(this))
+		{
 			Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
 			startShareDialog(uri);
 		}
@@ -174,7 +176,8 @@ public class MainActivity extends AppCompatActivity
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		switch (requestCode)
 		{
-			case PermissionManager.REQUEST_WRITE_STORAGE: {
+			case PermissionManager.REQUEST_WRITE_STORAGE:
+			{
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
 					Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
