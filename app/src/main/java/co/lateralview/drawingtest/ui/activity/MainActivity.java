@@ -15,20 +15,23 @@ import android.widget.Toast;
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import co.lateralview.drawingtest.R;
 import co.lateralview.drawingtest.domain.manager.FileManager;
 import co.lateralview.drawingtest.domain.manager.PermissionManager;
 import co.lateralview.drawingtest.ui.component.DrawingView;
 import co.lateralview.drawingtest.ui.dialog.StrokeSelectorDialog;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener
+public class MainActivity extends AppCompatActivity
 {
-	private DrawingView mDrawingView;
-	private ImageView mFillBackgroundImageView;
-	private ImageView mColorImageView;
-	private ImageView mStrokeImageView;
-	private ImageView mUndoImageView;
-	private ImageView mRedoImageView;
+	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
+	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
+	@Bind(R.id.main_color_iv) ImageView mColorImageView;
+	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
+	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
+	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
 	private int mCurrentBackgroundColor;
 	private int mCurrentColor;
@@ -40,7 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		initControls();
+		ButterKnife.bind(this);
+		
 		initDrawingView();
 	}
 
@@ -66,24 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void initControls()
-	{
-		mFillBackgroundImageView = (ImageView) findViewById(R.id.main_fill_iv);
-		mFillBackgroundImageView.setOnClickListener(this);
-		mColorImageView = (ImageView) findViewById(R.id.main_color_iv);
-		mColorImageView.setOnClickListener(this);
-		mStrokeImageView = (ImageView) findViewById(R.id.main_stroke_iv);
-		mStrokeImageView.setOnClickListener(this);
-		mUndoImageView = (ImageView) findViewById(R.id.main_undo_iv);
-		mUndoImageView.setOnClickListener(this);
-		mRedoImageView = (ImageView) findViewById(R.id.main_redo_iv);
-		mRedoImageView.setOnClickListener(this);
-	}
-
 	private void initDrawingView()
 	{
-		mDrawingView = (DrawingView) findViewById(R.id.main_drawing_view);
-
 		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
 		mCurrentColor = ContextCompat.getColor(this, R.color.flamingo);
 		mCurrentStroke = 10;
@@ -128,10 +116,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
-		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener()
+		{
 
 			@Override
-			public void onColorSelected(int color) {
+			public void onColorSelected(int color)
+			{
 				mCurrentColor = color;
 				mDrawingView.setPaintColor(mCurrentColor);
 			}
@@ -197,26 +187,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		}
 	}
 
-	@Override
-	public void onClick(View v)
+	@OnClick(R.id.main_fill_iv)
+	public void onBackgroundFillOptionClick()
 	{
-		switch (v.getId())
-		{
-			case R.id.main_fill_iv:
-				startFillBackgroundDialog();
-				break;
-			case R.id.main_color_iv:
-				startColorPickerDialog();
-				break;
-			case R.id.main_stroke_iv:
-				startStrokeSelectorDialog();
-				break;
-			case R.id.main_undo_iv:
-				mDrawingView.undo();
-				break;
-			case R.id.main_redo_iv:
-				mDrawingView.redo();
-				break;
-		}
+		startFillBackgroundDialog();
+	}
+
+	@OnClick(R.id.main_color_iv)
+	public void onColorOptionClick()
+	{
+		startColorPickerDialog();
+	}
+
+	@OnClick(R.id.main_stroke_iv)
+	public void onStrokeOptionClick()
+	{
+		startStrokeSelectorDialog();
+	}
+
+	@OnClick(R.id.main_undo_iv)
+	public void onUndoOptionClick()
+	{
+		mDrawingView.undo();
+	}
+
+	@OnClick(R.id.main_redo_iv)
+	public void onRedoOptionClick()
+	{
+		mDrawingView.redo();
 	}
 }
