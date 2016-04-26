@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void startStrokeSelectorDialog()
 	{
-		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, 30);
+		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, 50);
 
 		dialog.setOnStrokeSelectedListener(new StrokeSelectorDialog.OnStrokeSelectedListener()
 		{
