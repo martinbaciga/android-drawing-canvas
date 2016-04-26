@@ -1,6 +1,8 @@
 package co.lateralview.drawingtest.ui.activity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		switch (item.getItemId())
 		{
 			case R.id.action_share:
-				startShareDialog();
+				requestPermissionsAndSaveBitmap();
 				break;
 			case R.id.action_clear:
 				mDrawingView.clearCanvas();
@@ -156,10 +158,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		dialog.show(getSupportFragmentManager(), "StrokeSelectorDialog");
 	}
 
-	private void startShareDialog()
+	private void startShareDialog(Uri uri)
+	{
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_SEND);
+		intent.setType("image/*");
+
+		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
+		intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+		intent.putExtra(Intent.EXTRA_STREAM, uri);
+		startActivity(Intent.createChooser(intent, "Share Cover Image"));
+	}
+
+	private void requestPermissionsAndSaveBitmap()
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this)) {
-			FileManager.saveBitmap(mDrawingView.getBitmap());
+			Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+			startShareDialog(uri);
 		}
 	}
 
@@ -172,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			case PermissionManager.REQUEST_WRITE_STORAGE: {
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
-					FileManager.saveBitmap(mDrawingView.getBitmap());
+					Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+					startShareDialog(uri);
 				} else
 				{
 					Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
