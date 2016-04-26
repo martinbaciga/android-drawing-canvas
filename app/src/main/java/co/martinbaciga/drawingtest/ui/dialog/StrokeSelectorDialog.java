@@ -1,4 +1,4 @@
-package co.lateralview.drawingtest.ui.dialog;
+package co.martinbaciga.drawingtest.ui.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 
-import co.lateralview.drawingtest.R;
+import co.martinbaciga.drawingtest.R;
 
 public class StrokeSelectorDialog extends DialogFragment
 {

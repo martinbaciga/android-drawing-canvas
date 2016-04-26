@@ -1,9 +1,8 @@
-package co.lateralview.drawingtest.ui.component;
+package co.martinbaciga.drawingtest.ui.component;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -101,6 +100,7 @@ public class DrawingView extends View
 		{
 			case MotionEvent.ACTION_DOWN:
 				mDrawPath.moveTo(touchX, touchY);
+				//mDrawPath.addCircle(touchX, touchY, mStrokeWidth/10, Path.Direction.CW);
 				break;
 			case MotionEvent.ACTION_MOVE:
 				mDrawPath.lineTo(touchX, touchY);

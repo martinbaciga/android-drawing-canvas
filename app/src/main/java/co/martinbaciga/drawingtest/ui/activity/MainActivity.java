@@ -1,4 +1,4 @@
-package co.lateralview.drawingtest.ui.activity;
+package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,11 +17,11 @@ import org.xdty.preference.colorpicker.ColorPickerSwatch;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import co.lateralview.drawingtest.R;
-import co.lateralview.drawingtest.domain.manager.FileManager;
-import co.lateralview.drawingtest.domain.manager.PermissionManager;
-import co.lateralview.drawingtest.ui.component.DrawingView;
-import co.lateralview.drawingtest.ui.dialog.StrokeSelectorDialog;
+import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.domain.manager.FileManager;
+import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
+import co.martinbaciga.drawingtest.ui.component.DrawingView;
+import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 
 public class MainActivity extends AppCompatActivity
 {

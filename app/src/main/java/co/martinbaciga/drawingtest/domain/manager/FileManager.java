@@ -1,4 +1,4 @@
-package co.lateralview.drawingtest.domain.manager;
+package co.martinbaciga.drawingtest.domain.manager;
 
 import android.graphics.Bitmap;
 import android.net.Uri;

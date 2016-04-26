@@ -1,4 +1,4 @@
-package co.lateralview.drawingtest;
+package co.martinbaciga.drawingtest;
 
 import org.junit.Test;
 

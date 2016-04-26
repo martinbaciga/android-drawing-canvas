@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <co.lateralview.drawingtest.ui.component.DrawingView
+    <co.martinbaciga.drawingtest.ui.component.DrawingView
         android:id="@+id/main_drawing_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
