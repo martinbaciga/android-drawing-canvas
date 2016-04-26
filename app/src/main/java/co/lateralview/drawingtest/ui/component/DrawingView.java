@@ -16,27 +16,22 @@ import java.util.ArrayList;
 public class DrawingView extends View
 {
 	private Path mDrawPath;
-
-	private Paint mCanvasPaint;
-
 	private Paint mBackgroundPaint;
-
 	private Paint mDrawPaint;
-
-	private int mBackgroundColor = 0xFFFFFFFF;
-
-	private int mPaintColor = 0xFF660000;
-
-	private int mStrokeWidth = 10;
-
 	private Canvas mDrawCanvas;
-
 	private Bitmap mCanvasBitmap;
 
 	private ArrayList<Path> mPaths = new ArrayList<>();
 	private ArrayList<Paint> mPaints = new ArrayList<>();
 	private ArrayList<Path> mUndonePaths = new ArrayList<>();
 	private ArrayList<Paint> mUndonePaints = new ArrayList<>();
+
+	// Set default values
+	private int mBackgroundColor = 0xFFFFFFFF;
+
+	private int mPaintColor = 0xFF660000;
+
+	private int mStrokeWidth = 10;
 
 	public DrawingView(Context context, AttributeSet attrs)
 	{
@@ -49,7 +44,6 @@ public class DrawingView extends View
 		mDrawPath = new Path();
 		mBackgroundPaint = new Paint();
 		initPaint();
-		mCanvasPaint = new Paint(Paint.DITHER_FLAG);
 	}
 
 	private void initPaint()
@@ -68,6 +62,65 @@ public class DrawingView extends View
 		mBackgroundPaint.setColor(mBackgroundColor);
 		mBackgroundPaint.setStyle(Paint.Style.FILL);
 		canvas.drawRect(0, 0, this.getWidth(), this.getHeight(), mBackgroundPaint);
+	}
+
+	private void drawPaths(Canvas canvas)
+	{
+		int i = 0;
+		for (Path p : mPaths)
+		{
+			canvas.drawPath(p, mPaints.get(i));
+			i++;
+		}
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		drawBackground(canvas);
+
+		drawPaths(canvas);
+
+		canvas.drawPath(mDrawPath, mDrawPaint);
+	}
+
+	@Override
+	protected void onSizeChanged(int w, int h, int oldw, int oldh)
+	{
+		super.onSizeChanged(w, h, oldw, oldh);
+
+		mCanvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
+		mDrawCanvas = new Canvas(mCanvasBitmap);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		float touchX = event.getX();
+		float touchY = event.getY();
+
+		switch (event.getAction())
+		{
+			case MotionEvent.ACTION_DOWN:
+				mDrawPath.moveTo(touchX, touchY);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				mDrawPath.lineTo(touchX, touchY);
+				break;
+			case MotionEvent.ACTION_UP:
+				mDrawPath.lineTo(touchX, touchY);
+				mPaths.add(mDrawPath);
+				mPaints.add(mDrawPaint);
+				mDrawPath = new Path();
+				initPaint();
+				break;
+			default:
+				return false;
+		}
+
+		invalidate();
+		return true;
 	}
 
 	public void clearCanvas()
@@ -124,66 +177,5 @@ public class DrawingView extends View
 			mPaints.add(mUndonePaints.remove(mUndonePaints.size() - 1));
 			invalidate();
 		}
-	}
-
-	private void drawPaths(Canvas canvas)
-	{
-		int i = 0;
-		for (Path p : mPaths)
-		{
-			canvas.drawPath(p, mPaints.get(i));
-			i++;
-		}
-	}
-
-	@Override
-	protected void onDraw(Canvas canvas)
-	{
-		//canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
-		drawBackground(canvas);
-
-		drawPaths(canvas);
-
-		canvas.drawPath(mDrawPath, mDrawPaint);
-	}
-
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh)
-	{
-		super.onSizeChanged(w, h, oldw, oldh);
-
-		mCanvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-
-		mDrawCanvas = new Canvas(mCanvasBitmap);
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event)
-	{
-		float touchX = event.getX();
-		float touchY = event.getY();
-
-		switch (event.getAction())
-		{
-			case MotionEvent.ACTION_DOWN:
-				mDrawPath.moveTo(touchX, touchY);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				mDrawPath.lineTo(touchX, touchY);
-				break;
-			case MotionEvent.ACTION_UP:
-				mDrawPath.lineTo(touchX, touchY);
-				//mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
-				mPaths.add(mDrawPath);
-				mPaints.add(mDrawPaint);
-				mDrawPath = new Path();
-				initPaint();
-				break;
-			default:
-				return false;
-		}
-
-		invalidate();
-		return true;
 	}
 }
