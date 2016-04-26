@@ -141,8 +141,10 @@ public class DrawingView extends View
 	{
 		//canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
 		drawBackground(canvas);
-		canvas.drawPath(mDrawPath, mDrawPaint);
+
 		drawPaths(canvas);
+
+		canvas.drawPath(mDrawPath, mDrawPaint);
 	}
 
 	@Override
