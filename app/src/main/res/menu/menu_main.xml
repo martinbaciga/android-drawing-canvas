@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
       tools:context="co.lateralview.interviewtest.ui.activity.AddThreadActivity">
+    <item android:id="@+id/action_share"
+          android:title="Share"
+          app:showAsAction="always"
+          android:icon="@drawable/ic_share_white_24dp"/>
     <item android:id="@+id/action_clear"
           android:title="Clear"
           app:showAsAction="always"

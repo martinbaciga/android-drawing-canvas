@@ -1,5 +1,6 @@
 package co.lateralview.drawingtest.ui.activity;
 
+import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,11 +8,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
 
 import co.lateralview.drawingtest.R;
+import co.lateralview.drawingtest.domain.manager.FileManager;
+import co.lateralview.drawingtest.domain.manager.PermissionManager;
 import co.lateralview.drawingtest.ui.component.DrawingView;
 import co.lateralview.drawingtest.ui.dialog.StrokeSelectorDialog;
 
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	{
 		switch (item.getItemId())
 		{
+			case R.id.action_share:
+				startShareDialog();
+				break;
 			case R.id.action_clear:
 				mDrawingView.clearCanvas();
 				break;
@@ -94,10 +101,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
-		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener() {
+		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener()
+		{
 
 			@Override
-			public void onColorSelected(int color) {
+			public void onColorSelected(int color)
+			{
 				mCurrentBackgroundColor = color;
 				mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
 			}
@@ -145,6 +154,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		});
 
 		dialog.show(getSupportFragmentManager(), "StrokeSelectorDialog");
+	}
+
+	private void startShareDialog()
+	{
+		if (PermissionManager.checkWriteStoragePermissions(this)) {
+			FileManager.saveBitmap(mDrawingView.getBitmap());
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+	{
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		switch (requestCode)
+		{
+			case PermissionManager.REQUEST_WRITE_STORAGE: {
+				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+				{
+					FileManager.saveBitmap(mDrawingView.getBitmap());
+				} else
+				{
+					Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
+				}
+			}
+		}
 	}
 
 	@Override

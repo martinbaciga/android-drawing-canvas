@@ -3,6 +3,7 @@ package co.lateralview.drawingtest.ui.component;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -18,7 +19,11 @@ public class DrawingView extends View
 
 	private Paint mCanvasPaint;
 
+	private Paint mBackgroundPaint;
+
 	private Paint mDrawPaint;
+
+	private int mBackgroundColor = 0xFFFFFFFF;
 
 	private int mPaintColor = 0xFF660000;
 
@@ -42,6 +47,7 @@ public class DrawingView extends View
 	private void init()
 	{
 		mDrawPath = new Path();
+		mBackgroundPaint = new Paint();
 		initPaint();
 		mCanvasPaint = new Paint(Paint.DITHER_FLAG);
 	}
@@ -55,6 +61,13 @@ public class DrawingView extends View
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
+	}
+
+	private void drawBackground(Canvas canvas)
+	{
+		mBackgroundPaint.setColor(mBackgroundColor);
+		mBackgroundPaint.setStyle(Paint.Style.FILL);
+		canvas.drawRect(0, 0, this.getWidth(), this.getHeight(), mBackgroundPaint);
 	}
 
 	public void clearCanvas()
@@ -79,10 +92,19 @@ public class DrawingView extends View
 		mDrawPaint.setStrokeWidth(mStrokeWidth);
 	}
 
-	/*public Bitmap getBitmap()
+	public void setBackgroundColor(int color)
 	{
+		mBackgroundColor = color;
+		mBackgroundPaint.setColor(mBackgroundColor);
+		invalidate();
+	}
+
+	public Bitmap getBitmap()
+	{
+		drawBackground(mDrawCanvas);
+		drawPaths(mDrawCanvas);
 		return mCanvasBitmap;
-	}*/
+	}
 
 	public void undo()
 	{
@@ -104,18 +126,23 @@ public class DrawingView extends View
 		}
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas)
+	private void drawPaths(Canvas canvas)
 	{
-		//canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
-		canvas.drawPath(mDrawPath, mDrawPaint);
-
 		int i = 0;
 		for (Path p : mPaths)
 		{
 			canvas.drawPath(p, mPaints.get(i));
 			i++;
 		}
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas)
+	{
+		//canvas.drawBitmap(mCanvasBitmap, 0, 0, mCanvasPaint);
+		drawBackground(canvas);
+		canvas.drawPath(mDrawPath, mDrawPaint);
+		drawPaths(canvas);
 	}
 
 	@Override
@@ -144,7 +171,7 @@ public class DrawingView extends View
 				break;
 			case MotionEvent.ACTION_UP:
 				mDrawPath.lineTo(touchX, touchY);
-				mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
+				//mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
 				mPaths.add(mDrawPath);
 				mPaints.add(mDrawPaint);
 				mDrawPath = new Path();
