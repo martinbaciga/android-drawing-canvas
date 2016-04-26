@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
 		intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 		intent.putExtra(Intent.EXTRA_STREAM, uri);
-		startActivity(Intent.createChooser(intent, "Share Cover Image"));
+		startActivity(Intent.createChooser(intent, "Share Image"));
 	}
 
 	private void requestPermissionsAndSaveBitmap()
