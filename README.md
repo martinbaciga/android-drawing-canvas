@@ -2,6 +2,8 @@
 
 This is an example Android app that shows you how to use my custom Drawing View control. You can find this control in co.martinbaciga.drawingtest.ui.component. Here's how to use it:
 
+<img src="https://github.com/martinbaciga/android-drawing-canvas/blob/master/DrawingView.png" width="300"/>
+
 ###1. Add the DrawingView to your layout file:
 
 ```xml
