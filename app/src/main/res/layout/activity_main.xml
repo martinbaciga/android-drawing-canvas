@@ -7,11 +7,26 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <co.martinbaciga.drawingtest.ui.component.DrawingView
-        android:id="@+id/main_drawing_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.85"/>
+        android:layout_weight="0.85">
+
+        <co.martinbaciga.drawingtest.ui.component.DrawingView
+            android:id="@+id/main_drawing_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/main_text_example"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Example"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,6 +41,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_format_color_fill_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
+            android:id="@+id/main_text_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_title_white_24dp"
             android:padding="15dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>

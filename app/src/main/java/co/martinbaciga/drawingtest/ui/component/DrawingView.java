@@ -3,6 +3,7 @@ package co.martinbaciga.drawingtest.ui.component;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -12,11 +13,14 @@ import android.view.View;
 
 import java.util.ArrayList;
 
+import co.martinbaciga.drawingtest.domain.model.TextDrawingObject;
+
 public class DrawingView extends View
 {
 	private Path mDrawPath;
 	private Paint mBackgroundPaint;
 	private Paint mDrawPaint;
+	private Paint mTextPaint;
 	private Canvas mDrawCanvas;
 	private Bitmap mCanvasBitmap;
 
@@ -24,10 +28,11 @@ public class DrawingView extends View
 	private ArrayList<Paint> mPaints = new ArrayList<>();
 	private ArrayList<Path> mUndonePaths = new ArrayList<>();
 	private ArrayList<Paint> mUndonePaints = new ArrayList<>();
+	private ArrayList<TextDrawingObject> mTextDrawingObjects = new ArrayList<>();
 
 	// Set default values
-	private int mBackgroundColor = 0xFFFFFFFF;
-	private int mPaintColor = 0xFF660000;
+	private int mBackgroundColor = Color.WHITE;
+	private int mPaintColor = Color.BLACK;
 	private int mStrokeWidth = 10;
 
 	public DrawingView(Context context, AttributeSet attrs)
@@ -52,6 +57,10 @@ public class DrawingView extends View
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
+
+		mTextPaint = new Paint();
+		mTextPaint.setColor(Color.BLACK);
+		mTextPaint.setTextSize(30);
 	}
 
 	private void drawBackground(Canvas canvas)
@@ -71,11 +80,20 @@ public class DrawingView extends View
 		}
 	}
 
+	private void drawTexts(Canvas canvas)
+	{
+		for (TextDrawingObject tdo : mTextDrawingObjects)
+		{
+			canvas.drawText(tdo.getText(), tdo.getX(), tdo.getY(), tdo.getPaint());
+		}
+	}
+
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
 		drawBackground(canvas);
 		drawPaths(canvas);
+		drawTexts(canvas);
 
 		canvas.drawPath(mDrawPath, mDrawPaint);
 	}
@@ -126,6 +144,7 @@ public class DrawingView extends View
 		mPaints.clear();
 		mUndonePaths.clear();
 		mUndonePaints.clear();
+		mTextDrawingObjects.clear();
 		mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
 		invalidate();
 	}

@@ -1,14 +1,21 @@
 package co.martinbaciga.drawingtest.ui.activity;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
@@ -23,14 +30,20 @@ import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements View.OnDragListener, View.OnTouchListener
 {
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
 	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
+	@Bind(R.id.main_text_iv) ImageView mTextImageView;
 	@Bind(R.id.main_color_iv) ImageView mColorImageView;
 	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
+
+	@Bind(R.id.main_text_example)
+	TextView mTextExample;
+
+	private android.widget.RelativeLayout.LayoutParams layoutParams;
 
 	private int mCurrentBackgroundColor;
 	private int mCurrentColor;
@@ -46,6 +59,9 @@ public class MainActivity extends AppCompatActivity
 		ButterKnife.bind(this);
 
 		initDrawingView();
+
+		mTextExample.setOnTouchListener(this);
+		mTextExample.setOnDragListener(this);
 	}
 
 	@Override
@@ -195,6 +211,12 @@ public class MainActivity extends AppCompatActivity
 		startFillBackgroundDialog();
 	}
 
+	@OnClick(R.id.main_text_iv)
+	public void onTextOptionClick()
+	{
+
+	}
+
 	@OnClick(R.id.main_color_iv)
 	public void onColorOptionClick()
 	{
@@ -217,5 +239,57 @@ public class MainActivity extends AppCompatActivity
 	public void onRedoOptionClick()
 	{
 		mDrawingView.redo();
+	}
+
+	@Override
+	public boolean onDrag(View v, DragEvent event)
+	{
+		switch(event.getAction())
+		{
+			case DragEvent.ACTION_DRAG_STARTED:
+				layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
+				// Do nothing
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				break;
+			case DragEvent.ACTION_DRAG_LOCATION:
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+				// Do nothing
+				break;
+			case DragEvent.ACTION_DROP:
+				View view = (View) event.getLocalState();
+				ViewGroup owner = (ViewGroup) view.getParent();
+				owner.removeView(view);
+				RelativeLayout container = (RelativeLayout) v;
+				container.addView(view);
+				view.setVisibility(View.VISIBLE);
+				break;
+			default:
+				break;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            /*
+             * Drag details: we only need default behavior
+             * - clip data could be set to pass data as part of drag
+             * - shadow can be tailored
+             */
+			ClipData data = ClipData.newPlainText("", "");
+			View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+			//start dragging the item touched
+			v.startDrag(data, shadowBuilder, v, 0);
+			v.setVisibility(View.INVISIBLE);
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
