@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 
 public class MainActivity extends AppCompatActivity implements View.OnDragListener, View.OnTouchListener
 {
+	@Bind(R.id.relative) RelativeLayout mRelative;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
 	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
 	@Bind(R.id.main_text_iv) ImageView mTextImageView;
@@ -62,10 +64,40 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 
 		mTextExample.setOnTouchListener(this);
 		mTextExample.setOnDragListener(this);
+		mRelative.setOnDragListener(new View.OnDragListener()
+		{
+			@Override
+			public boolean onDrag(View v, DragEvent event)
+			{
+				if (event.getAction() == DragEvent.ACTION_DROP)
+				{
+					int x = (int) event.getX();
+					int  y = (int) event.getY();
+
+					if (x >= v.getWidth())
+					{
+						mTextExample.setX(v.getWidth()-(mTextExample.getWidth()/2));
+					} else
+					{
+						mTextExample.setX(x-(mTextExample.getWidth()/2));
+					}
+
+					if (y + mTextExample.getHeight() >= v.getHeight())
+					{
+						mTextExample.setY(v.getHeight() - mTextExample.getHeight());
+					} else
+					{
+						mTextExample.setY(y-(mTextExample.getHeight()/2));
+					}
+				}
+				return true;
+			}
+		});
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
@@ -244,32 +276,6 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 	@Override
 	public boolean onDrag(View v, DragEvent event)
 	{
-		switch(event.getAction())
-		{
-			case DragEvent.ACTION_DRAG_STARTED:
-				layoutParams = (RelativeLayout.LayoutParams) v.getLayoutParams();
-				// Do nothing
-				break;
-			case DragEvent.ACTION_DRAG_ENTERED:
-				break;
-			case DragEvent.ACTION_DRAG_EXITED:
-				break;
-			case DragEvent.ACTION_DRAG_LOCATION:
-				break;
-			case DragEvent.ACTION_DRAG_ENDED:
-				// Do nothing
-				break;
-			case DragEvent.ACTION_DROP:
-				View view = (View) event.getLocalState();
-				ViewGroup owner = (ViewGroup) view.getParent();
-				owner.removeView(view);
-				RelativeLayout container = (RelativeLayout) v;
-				container.addView(view);
-				view.setVisibility(View.VISIBLE);
-				break;
-			default:
-				break;
-		}
 		return true;
 	}
 
@@ -283,10 +289,10 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
              * - shadow can be tailored
              */
 			ClipData data = ClipData.newPlainText("", "");
-			View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+			View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(mTextExample);
 			//start dragging the item touched
-			v.startDrag(data, shadowBuilder, v, 0);
-			v.setVisibility(View.INVISIBLE);
+			mTextExample.startDrag(data, shadowBuilder, mTextExample, 0);
+			//mTextExample.setVisibility(View.INVISIBLE);
 			return true;
 		} else {
 			return false;
