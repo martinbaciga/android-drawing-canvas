@@ -34,6 +34,7 @@ public class DrawingView extends View
 	private int mBackgroundColor = Color.WHITE;
 	private int mPaintColor = Color.BLACK;
 	private int mStrokeWidth = 10;
+	private boolean mEnabled = true;
 
 	public DrawingView(Context context, AttributeSet attrs)
 	{
@@ -111,30 +112,33 @@ public class DrawingView extends View
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		float touchX = event.getX();
-		float touchY = event.getY();
-
-		switch (event.getAction())
+		if (mEnabled)
 		{
-			case MotionEvent.ACTION_DOWN:
-				mDrawPath.moveTo(touchX, touchY);
-				//mDrawPath.addCircle(touchX, touchY, mStrokeWidth/10, Path.Direction.CW);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				mDrawPath.lineTo(touchX, touchY);
-				break;
-			case MotionEvent.ACTION_UP:
-				mDrawPath.lineTo(touchX, touchY);
-				mPaths.add(mDrawPath);
-				mPaints.add(mDrawPaint);
-				mDrawPath = new Path();
-				initPaint();
-				break;
-			default:
-				return false;
-		}
+			float touchX = event.getX();
+			float touchY = event.getY();
 
-		invalidate();
+			switch (event.getAction())
+			{
+				case MotionEvent.ACTION_DOWN:
+					mDrawPath.moveTo(touchX, touchY);
+					//mDrawPath.addCircle(touchX, touchY, mStrokeWidth/10, Path.Direction.CW);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					mDrawPath.lineTo(touchX, touchY);
+					break;
+				case MotionEvent.ACTION_UP:
+					mDrawPath.lineTo(touchX, touchY);
+					mPaths.add(mDrawPath);
+					mPaints.add(mDrawPaint);
+					mDrawPath = new Path();
+					initPaint();
+					break;
+				default:
+					return false;
+			}
+
+			invalidate();
+		}
 		return true;
 	}
 
@@ -193,5 +197,10 @@ public class DrawingView extends View
 			mPaints.add(mUndonePaints.remove(mUndonePaints.size() - 1));
 			invalidate();
 		}
+	}
+
+	public void setEnabled(boolean enabled)
+	{
+		mEnabled = enabled;
 	}
 }

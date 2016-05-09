@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text_container"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="@color/green">
+
+    <TextView
+        android:id="@+id/main_text_example"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        android:textSize="20sp"
+        android:padding="10dp"/>
+
+    <ImageView
+        android:id="@+id/text_resize_iv"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@color/red"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

@@ -5,13 +5,17 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,7 +35,7 @@ import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 
-public class MainActivity extends AppCompatActivity implements View.OnDragListener, View.OnTouchListener
+public class MainActivity extends AppCompatActivity
 {
 	@Bind(R.id.relative) RelativeLayout mRelative;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
@@ -42,8 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
+	@Bind(R.id.text_container)
+	RelativeLayout mTextContainer;
 	@Bind(R.id.main_text_example)
 	TextView mTextExample;
+	@Bind(R.id.text_resize_iv)
+	ImageView mResizeImageView;
 
 	private android.widget.RelativeLayout.LayoutParams layoutParams;
 
@@ -51,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 	private int mCurrentColor;
 	private int mCurrentStroke;
 	private static final int MAX_STROKE_WIDTH = 50;
+
+	private int mDeltaX;
+	private int mDeltaY;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -61,38 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 		ButterKnife.bind(this);
 
 		initDrawingView();
-
-		mTextExample.setOnTouchListener(this);
-		mTextExample.setOnDragListener(this);
-		mRelative.setOnDragListener(new View.OnDragListener()
-		{
-			@Override
-			public boolean onDrag(View v, DragEvent event)
-			{
-				if (event.getAction() == DragEvent.ACTION_DROP)
-				{
-					int x = (int) event.getX();
-					int  y = (int) event.getY();
-
-					if (x >= v.getWidth())
-					{
-						mTextExample.setX(v.getWidth()-(mTextExample.getWidth()/2));
-					} else
-					{
-						mTextExample.setX(x-(mTextExample.getWidth()/2));
-					}
-
-					if (y + mTextExample.getHeight() >= v.getHeight())
-					{
-						mTextExample.setY(v.getHeight() - mTextExample.getHeight());
-					} else
-					{
-						mTextExample.setY(y-(mTextExample.getHeight()/2));
-					}
-				}
-				return true;
-			}
-		});
 	}
 
 	@Override
@@ -127,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
 		mDrawingView.setPaintColor(mCurrentColor);
 		mDrawingView.setPaintStrokeWidth(mCurrentStroke);
+
+		mDrawingView.setEnabled(false);
 	}
 
 	private void startFillBackgroundDialog()
@@ -271,31 +252,5 @@ public class MainActivity extends AppCompatActivity implements View.OnDragListen
 	public void onRedoOptionClick()
 	{
 		mDrawingView.redo();
-	}
-
-	@Override
-	public boolean onDrag(View v, DragEvent event)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event)
-	{
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            /*
-             * Drag details: we only need default behavior
-             * - clip data could be set to pass data as part of drag
-             * - shadow can be tailored
-             */
-			ClipData data = ClipData.newPlainText("", "");
-			View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(mTextExample);
-			//start dragging the item touched
-			mTextExample.startDrag(data, shadowBuilder, mTextExample, 0);
-			//mTextExample.setVisibility(View.INVISIBLE);
-			return true;
-		} else {
-			return false;
-		}
 	}
 }
