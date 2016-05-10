@@ -17,6 +17,14 @@ import co.martinbaciga.drawingtest.domain.model.TextDrawingObject;
 
 public class DrawingView extends View
 {
+	public static final int PIXEL_SIZE = 8;
+	private int mCanvasWidth = 2160;
+	private int mCanvasHeight = 3552;
+	private float mScale = 1.0f;
+
+	private int mLastX;
+	private int mLastY;
+
 	private Path mDrawPath;
 	private Paint mBackgroundPaint;
 	private Paint mDrawPaint;
@@ -28,7 +36,6 @@ public class DrawingView extends View
 	private ArrayList<Paint> mPaints = new ArrayList<>();
 	private ArrayList<Path> mUndonePaths = new ArrayList<>();
 	private ArrayList<Paint> mUndonePaints = new ArrayList<>();
-	private ArrayList<TextDrawingObject> mTextDrawingObjects = new ArrayList<>();
 
 	// Set default values
 	private int mBackgroundColor = Color.WHITE;
@@ -64,11 +71,11 @@ public class DrawingView extends View
 		mTextPaint.setTextSize(30);
 	}
 
-	private void drawBackground(Canvas canvas)
+	private void drawBackground(Canvas canvas, float width, float height)
 	{
 		mBackgroundPaint.setColor(mBackgroundColor);
-		mBackgroundPaint.setStyle(Paint.Style.FILL);
-		canvas.drawRect(0, 0, this.getWidth(), this.getHeight(), mBackgroundPaint);
+		mBackgroundPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+		canvas.drawRect(0, 0, width, height, mBackgroundPaint);
 	}
 
 	private void drawPaths(Canvas canvas)
@@ -81,20 +88,26 @@ public class DrawingView extends View
 		}
 	}
 
-	private void drawTexts(Canvas canvas)
-	{
-		for (TextDrawingObject tdo : mTextDrawingObjects)
-		{
-			canvas.drawText(tdo.getText(), tdo.getX(), tdo.getY(), tdo.getPaint());
-		}
+	public static Paint paintFromColor(int color) {
+		return paintFromColor(color, Paint.Style.STROKE);
+	}
+
+	public static Paint paintFromColor(int color, Paint.Style style) {
+		Paint p = new Paint();
+		p.setAntiAlias(true);
+		p.setDither(true);
+		p.setColor(color);
+		p.setStyle(style);
+		return p;
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		drawBackground(canvas);
+		canvas.drawColor(Color.DKGRAY);
+
+		drawBackground(canvas, mCanvasBitmap.getWidth(), mCanvasHeight);
 		drawPaths(canvas);
-		drawTexts(canvas);
 
 		canvas.drawPath(mDrawPath, mDrawPaint);
 	}
@@ -104,7 +117,11 @@ public class DrawingView extends View
 	{
 		super.onSizeChanged(w, h, oldw, oldh);
 
-		mCanvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		mScale = Math.min(1.0f * w / mCanvasWidth, 1.0f * h / mCanvasHeight);
+
+		//mCanvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
+		mCanvasBitmap = Bitmap.createBitmap(Math.round(mCanvasWidth * mScale), Math.round(mCanvasHeight * mScale), Bitmap.Config.ARGB_8888);
 
 		mDrawCanvas = new Canvas(mCanvasBitmap);
 	}
@@ -120,18 +137,13 @@ public class DrawingView extends View
 			switch (event.getAction())
 			{
 				case MotionEvent.ACTION_DOWN:
-					mDrawPath.moveTo(touchX, touchY);
-					//mDrawPath.addCircle(touchX, touchY, mStrokeWidth/10, Path.Direction.CW);
+					onTouchDown(touchX, touchY);
 					break;
 				case MotionEvent.ACTION_MOVE:
-					mDrawPath.lineTo(touchX, touchY);
+					onTouchMove(touchX, touchY);
 					break;
 				case MotionEvent.ACTION_UP:
-					mDrawPath.lineTo(touchX, touchY);
-					mPaths.add(mDrawPath);
-					mPaints.add(mDrawPaint);
-					mDrawPath = new Path();
-					initPaint();
+					onTouchUp(touchX, touchY);
 					break;
 				default:
 					return false;
@@ -142,13 +154,33 @@ public class DrawingView extends View
 		return true;
 	}
 
+	private void onTouchDown(float touchX, float touchY)
+	{
+		mDrawPath.moveTo(touchX, touchY);
+		mLastX = (int) touchX / PIXEL_SIZE;
+		mLastY = (int) touchY / PIXEL_SIZE;
+	}
+
+	private void onTouchMove(float touchX, float touchY)
+	{
+		mDrawPath.lineTo(touchX, touchY);
+	}
+
+	private void onTouchUp(float touchX, float touchY)
+	{
+		mDrawPath.lineTo(touchX, touchY);
+		mPaths.add(mDrawPath);
+		mPaints.add(mDrawPaint);
+		mDrawPath = new Path();
+		initPaint();
+	}
+
 	public void clearCanvas()
 	{
 		mPaths.clear();
 		mPaints.clear();
 		mUndonePaths.clear();
 		mUndonePaints.clear();
-		mTextDrawingObjects.clear();
 		mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
 		invalidate();
 	}
@@ -174,7 +206,7 @@ public class DrawingView extends View
 
 	public Bitmap getBitmap()
 	{
-		drawBackground(mDrawCanvas);
+		drawBackground(mDrawCanvas, mCanvasBitmap.getWidth(), mCanvasBitmap.getHeight());
 		drawPaths(mDrawCanvas);
 		return mCanvasBitmap;
 	}

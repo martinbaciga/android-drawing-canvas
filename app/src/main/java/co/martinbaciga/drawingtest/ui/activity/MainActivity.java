@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
 		mDrawingView.setPaintColor(mCurrentColor);
 		mDrawingView.setPaintStrokeWidth(mCurrentStroke);
 
-		mDrawingView.setEnabled(false);
+		mDrawingView.setEnabled(true);
 	}
 
 	private void startFillBackgroundDialog()
