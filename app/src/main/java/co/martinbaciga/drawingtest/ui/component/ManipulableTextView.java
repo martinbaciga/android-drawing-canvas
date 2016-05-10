@@ -1,6 +1,7 @@
 package co.martinbaciga.drawingtest.ui.component;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -8,18 +9,18 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import co.martinbaciga.drawingtest.R;
 
-public class ManipulableTextView extends RelativeLayout
+public class ManipulableTextView extends RelativeLayout implements View.OnTouchListener
 {
+	private int mPosX;
+	private int mPosY;
+
 	private ScaleGestureDetector mScaleDetector;
-	private int mActivePointerId = 1;
-	private float mLastTouchX;
-	private float mLastTouchY;
-	private float mPosX;
-	private float mPosY;
+	private float mScaleFactor = 1.f;
 
 	public ManipulableTextView(Context context) {
 		super(context);
@@ -39,81 +40,62 @@ public class ManipulableTextView extends RelativeLayout
 	private void init(Context context)
 	{
 		LayoutInflater.from(context).inflate(R.layout.manipulable_text_view, this);
+		this.setOnTouchListener(this);
+		//ImageView imageView = (ImageView) findViewById(R.id.text_resize_iv);
+		//imageView.setOnTouchListener(this);
+		//mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		// Let the ScaleGestureDetector inspect all events.
-		//mScaleDetector.onTouchEvent(ev);
+	public boolean onTouch(View v, MotionEvent event)
+	{
+		final int x = (int) event.getRawX();
+		final int y = (int) event.getRawY();
 
-		final int action = MotionEventCompat.getActionMasked(ev);
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
-		switch (action) {
-			case MotionEvent.ACTION_DOWN: {
-				final int pointerIndex = MotionEventCompat.getActionIndex(ev);
-				final float x = MotionEventCompat.getX(ev, pointerIndex);
-				final float y = MotionEventCompat.getY(ev, pointerIndex);
+			case MotionEvent.ACTION_DOWN:
+				RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
+						this.getLayoutParams();
 
-				// Remember where we started (for dragging)
-				mLastTouchX = x;
-				mLastTouchY = y;
-				// Save the ID of this pointer (for dragging)
-				mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+				mPosX = x - lParams.leftMargin;
+				mPosY = y - lParams.topMargin;
 				break;
-			}
 
-			case MotionEvent.ACTION_MOVE: {
-				// Find the index of the active pointer and fetch its position
-				final int pointerIndex =
-						MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-
-				final float x = MotionEventCompat.getX(ev, pointerIndex);
-				final float y = MotionEventCompat.getY(ev, pointerIndex);
-
-				// Calculate the distance moved
-				final float dx = x - mLastTouchX;
-				final float dy = y - mLastTouchY;
-
-				mPosX += dx;
-				mPosY += dy;
-
-				this.setX(mPosX);
-				this.setY(mPosY);
-				//invalidate();
-
-				// Remember this touch position for the next move event
-				mLastTouchX = x;
-				mLastTouchY = y;
-
+			case MotionEvent.ACTION_UP:
 				break;
-			}
 
-			case MotionEvent.ACTION_UP: {
-				mActivePointerId = 0;
+			case MotionEvent.ACTION_MOVE:
+				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
+				layoutParams.leftMargin = x - mPosX;
+				layoutParams.topMargin = y - mPosY;
+				layoutParams.rightMargin = 0;
+				layoutParams.bottomMargin = 0;
+				this.setLayoutParams(layoutParams);
 				break;
-			}
-
-			case MotionEvent.ACTION_CANCEL: {
-				mActivePointerId = 0;
-				break;
-			}
-
-			case MotionEvent.ACTION_POINTER_UP: {
-
-				final int pointerIndex = MotionEventCompat.getActionIndex(ev);
-				final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
-
-				if (pointerId == mActivePointerId) {
-					// This was our active pointer going up. Choose a new
-					// active pointer and adjust accordingly.
-					final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-					mLastTouchX = MotionEventCompat.getX(ev, newPointerIndex);
-					mLastTouchY = MotionEventCompat.getY(ev, newPointerIndex);
-					mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
-				}
-				break;
-			}
 		}
+
+		invalidate();
 		return true;
 	}
+
+	/*@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		// Let the ScaleGestureDetector inspect all events.
+		mScaleDetector.onTouchEvent(ev);
+		return true;
+	}
+
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+		@Override
+		public boolean onScale(ScaleGestureDetector detector) {
+			mScaleFactor *= detector.getScaleFactor();
+
+			// Don't let the object get too small or too large.
+			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
+
+			invalidate();
+			return true;
+		}
+	}*/
 }
