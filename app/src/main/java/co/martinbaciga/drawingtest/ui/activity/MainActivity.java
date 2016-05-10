@@ -46,12 +46,12 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
-	@Bind(R.id.text_container)
+	/*@Bind(R.id.text_container)
 	RelativeLayout mTextContainer;
 	@Bind(R.id.main_text_example)
 	TextView mTextExample;
 	@Bind(R.id.text_resize_iv)
-	ImageView mResizeImageView;
+	ImageView mResizeImageView;*/
 
 	private android.widget.RelativeLayout.LayoutParams layoutParams;
 

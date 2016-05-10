@@ -10,6 +10,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import co.martinbaciga.drawingtest.R;
@@ -18,9 +19,8 @@ public class ManipulableTextView extends RelativeLayout implements View.OnTouchL
 {
 	private int mPosX;
 	private int mPosY;
-
-	private ScaleGestureDetector mScaleDetector;
-	private float mScaleFactor = 1.f;
+	private int mWidth;
+	private int mHeight;
 
 	public ManipulableTextView(Context context) {
 		super(context);
@@ -41,9 +41,9 @@ public class ManipulableTextView extends RelativeLayout implements View.OnTouchL
 	{
 		LayoutInflater.from(context).inflate(R.layout.manipulable_text_view, this);
 		this.setOnTouchListener(this);
-		//ImageView imageView = (ImageView) findViewById(R.id.text_resize_iv);
-		//imageView.setOnTouchListener(this);
-		//mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+
+		ImageView imageView = (ImageView) findViewById(R.id.text_resize_iv);
+		imageView.setOnTouchListener(this);
 	}
 
 	@Override
@@ -52,50 +52,49 @@ public class ManipulableTextView extends RelativeLayout implements View.OnTouchL
 		final int x = (int) event.getRawX();
 		final int y = (int) event.getRawY();
 
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		if (v.getClass() == ManipulableTextView.class)
+		{
+			/*switch (event.getAction() & MotionEvent.ACTION_MASK)
+			{
+				case MotionEvent.ACTION_DOWN:
+					RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
+							this.getLayoutParams();
 
-			case MotionEvent.ACTION_DOWN:
-				RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams)
-						this.getLayoutParams();
-
-				mPosX = x - lParams.leftMargin;
-				mPosY = y - lParams.topMargin;
-				break;
-
-			case MotionEvent.ACTION_UP:
-				break;
-
-			case MotionEvent.ACTION_MOVE:
-				RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
-				layoutParams.leftMargin = x - mPosX;
-				layoutParams.topMargin = y - mPosY;
-				layoutParams.rightMargin = 0;
-				layoutParams.bottomMargin = 0;
-				this.setLayoutParams(layoutParams);
-				break;
+					mPosX = x - lParams.leftMargin;
+					mPosY = y - lParams.topMargin;
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
+					layoutParams.leftMargin = x - mPosX;
+					layoutParams.topMargin = y - mPosY;
+					layoutParams.rightMargin = 0;
+					layoutParams.bottomMargin = 0;
+					this.setLayoutParams(layoutParams);
+					break;
+			}*/
+		} else
+		{
+			switch (event.getAction() & MotionEvent.ACTION_MASK)
+			{
+				case MotionEvent.ACTION_DOWN:
+					mWidth = x - this.getWidth();
+					mHeight = y - this.getHeight();
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
+					layoutParams.width = x - mWidth;
+					layoutParams.height = y - mHeight;
+					this.setLayoutParams(layoutParams);
+					break;
+			}
 		}
 
 		invalidate();
 		return true;
 	}
 
-	/*@Override
-	public boolean onTouchEvent(MotionEvent ev) {
-		// Let the ScaleGestureDetector inspect all events.
-		mScaleDetector.onTouchEvent(ev);
-		return true;
-	}
-
-	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-		@Override
-		public boolean onScale(ScaleGestureDetector detector) {
-			mScaleFactor *= detector.getScaleFactor();
-
-			// Don't let the object get too small or too large.
-			mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-
-			invalidate();
-			return true;
-		}
-	}*/
 }
