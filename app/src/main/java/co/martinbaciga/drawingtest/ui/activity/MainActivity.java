@@ -1,26 +1,15 @@
 package co.martinbaciga.drawingtest.ui.activity;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
@@ -45,13 +34,6 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
-
-	/*@Bind(R.id.text_container)
-	RelativeLayout mTextContainer;
-	@Bind(R.id.main_text_example)
-	TextView mTextExample;
-	@Bind(R.id.text_resize_iv)
-	ImageView mResizeImageView;*/
 
 	private android.widget.RelativeLayout.LayoutParams layoutParams;
 
