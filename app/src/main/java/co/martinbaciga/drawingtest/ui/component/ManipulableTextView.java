@@ -3,14 +3,16 @@ package co.martinbaciga.drawingtest.ui.component;
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import co.martinbaciga.drawingtest.R;
 
-public class ManipulableTextView extends ViewGroup
+public class ManipulableTextView extends RelativeLayout
 {
 	private ScaleGestureDetector mScaleDetector;
 	private int mActivePointerId = 1;
@@ -21,28 +23,22 @@ public class ManipulableTextView extends ViewGroup
 
 	public ManipulableTextView(Context context) {
 		super(context);
-		init();
+		init(context);
 	}
 
 	public ManipulableTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context);
 	}
 
 	public ManipulableTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init(context);
 	}
 
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b)
+	private void init(Context context)
 	{
-
-	}
-
-	private void init()
-	{
-		inflate(getContext(), R.layout.manipulable_text_view, this);
+		LayoutInflater.from(context).inflate(R.layout.manipulable_text_view, this);
 	}
 
 	@Override
@@ -81,7 +77,9 @@ public class ManipulableTextView extends ViewGroup
 				mPosX += dx;
 				mPosY += dy;
 
-				invalidate();
+				this.setX(mPosX);
+				this.setY(mPosY);
+				//invalidate();
 
 				// Remember this touch position for the next move event
 				mLastTouchX = x;
