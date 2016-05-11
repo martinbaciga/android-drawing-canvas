@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 	{
 		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
 		mCurrentColor = ContextCompat.getColor(this, android.R.color.black);
-		mCurrentStroke = 10;
+		mCurrentStroke = 8;
 
 		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
 		mDrawingView.setPaintColor(mCurrentColor);
