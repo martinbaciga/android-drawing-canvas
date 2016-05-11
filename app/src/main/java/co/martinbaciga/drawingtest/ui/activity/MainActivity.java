@@ -37,9 +37,6 @@ public class MainActivity extends AppCompatActivity
 
 	private android.widget.RelativeLayout.LayoutParams layoutParams;
 
-	private int mCurrentBackgroundColor;
-	private int mCurrentColor;
-	private int mCurrentStroke;
 	private static final int MAX_STROKE_WIDTH = 50;
 
 	private int mDeltaX;
@@ -81,14 +78,6 @@ public class MainActivity extends AppCompatActivity
 
 	private void initDrawingView()
 	{
-		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
-		mCurrentColor = ContextCompat.getColor(this, android.R.color.black);
-		mCurrentStroke = 8;
-
-		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
-		mDrawingView.setPaintColor(mCurrentColor);
-		mDrawingView.setPaintStrokeWidth(mCurrentStroke);
-
 		mDrawingView.setEnabled(true);
 	}
 
@@ -98,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
-				mCurrentBackgroundColor,
+				mDrawingView.getBackgroundColor(),
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
@@ -108,8 +97,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onColorSelected(int color)
 			{
-				mCurrentBackgroundColor = color;
-				mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
+				mDrawingView.setBackgroundColor(color);
 			}
 
 		});
@@ -123,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
-				mCurrentColor,
+				mDrawingView.getPaintColor(),
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
@@ -133,8 +121,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onColorSelected(int color)
 			{
-				mCurrentColor = color;
-				mDrawingView.setPaintColor(mCurrentColor);
+				mDrawingView.setPaintColor(color);
 			}
 
 		});
@@ -144,15 +131,14 @@ public class MainActivity extends AppCompatActivity
 
 	private void startStrokeSelectorDialog()
 	{
-		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, MAX_STROKE_WIDTH);
+		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mDrawingView.getStrokeWidth(), MAX_STROKE_WIDTH);
 
 		dialog.setOnStrokeSelectedListener(new StrokeSelectorDialog.OnStrokeSelectedListener()
 		{
 			@Override
 			public void onStrokeSelected(int stroke)
 			{
-				mCurrentStroke = stroke;
-				mDrawingView.setPaintStrokeWidth(mCurrentStroke);
+				mDrawingView.setStrokeWidth(stroke);
 			}
 		});
 

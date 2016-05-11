@@ -12,12 +12,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
 import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
+import co.martinbaciga.drawingtest.domain.model.Board;
 import co.martinbaciga.drawingtest.domain.model.Point;
 import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.domain.model.TextDrawingObject;
@@ -36,7 +39,6 @@ public class DrawingView extends View
 	private Path mDrawPath;
 	private Paint mBackgroundPaint;
 	private Paint mDrawPaint;
-	private Paint mTextPaint;
 	private Canvas mDrawCanvas;
 	private Bitmap mCanvasBitmap;
 
@@ -64,6 +66,52 @@ public class DrawingView extends View
 		mDrawPath = new Path();
 		mBackgroundPaint = new Paint();
 		initPaint();
+		syncBoard();
+	}
+
+	private void syncBoard()
+	{
+		Firebase boardRef = DrawingCanvasApplication.getInstance().getFirebaseRef().child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD);
+
+		boardRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				Board board = dataSnapshot.getValue(Board.class);
+
+				if (board != null)
+				{
+					setBackgroundColor(board.getBackgroundColor());
+				} else
+				{
+					saveBoard();
+				}
+			}
+
+			@Override
+			public void onCancelled(FirebaseError firebaseError) {
+				// No-op
+			}
+		});
+	}
+
+	private void saveBoard()
+	{
+		Board board = new Board(mBackgroundColor);
+
+		Firebase boardRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD);
+
+		boardRef.setValue(board, new Firebase.CompletionListener() {
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef) {
+				if (error != null) {
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
+			}
+		});
 	}
 
 	private void initPaint()
@@ -166,7 +214,7 @@ public class DrawingView extends View
 		mLastX = (int) touchX / PIXEL_SIZE;
 		mLastY = (int) touchY / PIXEL_SIZE;
 
-		mCurrentSegment = new Segment(mPaintColor);
+		mCurrentSegment = new Segment(mPaintColor, mStrokeWidth);
 		mCurrentSegment.addPoint(mLastX, mLastY);
 	}
 
@@ -194,21 +242,39 @@ public class DrawingView extends View
 		mDrawPath = new Path();
 		initPaint();
 
-		// create a scaled version of the segment, so that it matches the size of the board
-		Segment segment = new Segment(mCurrentSegment.getColor());
+		saveSegment();
+	}
+
+	private void saveSegment()
+	{
+		// scaled version of the segment, so that it matches the size of the board
+		Segment segment = new Segment(mCurrentSegment.getColor(), mCurrentSegment.getStrokeWidth());
 		for (Point point: mCurrentSegment.getPoints()) {
 			segment.addPoint(Math.round(point.getX() / mScale), Math.round(point.getY() / mScale));
 		}
 
-		// Save our segment into Firebase. This will let other clients see the data and add it to their own canvases.
-		// Also make a note of the outstanding segment name so we don't do a duplicate draw in our onChildAdded callback.
-		// We can remove the name from mOutstandingSegments once the completion listener is triggered, since we will have
-		// received the child added event by then.
 		Firebase segmentRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
 				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
 				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS).push();
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener() {
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef) {
+				if (error != null) {
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
+			}
+		});
+	}
+
+	private void saveBackgroundColorChange()
+	{
+		Firebase boardRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
+
+		boardRef.setValue(mBackgroundColor, new Firebase.CompletionListener() {
 			@Override
 			public void onComplete(FirebaseError error, Firebase firebaseRef) {
 				if (error != null) {
@@ -236,10 +302,20 @@ public class DrawingView extends View
 		mDrawPaint.setColor(mPaintColor);
 	}
 
-	public void setPaintStrokeWidth(int strokeWidth)
+	public int getPaintColor()
+	{
+		return mPaintColor;
+	}
+
+	public void setStrokeWidth(int strokeWidth)
 	{
 		mStrokeWidth = strokeWidth;
 		mDrawPaint.setStrokeWidth(mStrokeWidth);
+	}
+
+	public int getStrokeWidth()
+	{
+		return mStrokeWidth;
 	}
 
 	public void setBackgroundColor(int color)
@@ -247,6 +323,13 @@ public class DrawingView extends View
 		mBackgroundColor = color;
 		mBackgroundPaint.setColor(mBackgroundColor);
 		invalidate();
+
+		saveBackgroundColorChange();
+	}
+
+	public int getBackgroundColor()
+	{
+		return mBackgroundColor;
 	}
 
 	public Bitmap getBitmap()
