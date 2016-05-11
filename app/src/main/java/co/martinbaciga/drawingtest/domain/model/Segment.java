@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Segment
 {
-    private List<Point> mPoints = new ArrayList<Point>();
-    private int mColor;
-    private int mStrokeWidth;
+    private List<Point> points = new ArrayList<Point>();
+    private int color;
+    private int strokeWidth;
 
     // Required default constructor for Firebase serialization / deserialization
     @SuppressWarnings("unused")
@@ -15,30 +15,30 @@ public class Segment
     }
 
     public Segment(int color, int strokeWidth) {
-        this.mColor = color;
-		this.mStrokeWidth = strokeWidth;
+        this.color = color;
+		this.strokeWidth = strokeWidth;
     }
 
     public void addPoint(int x, int y) {
         Point p = new Point(x, y);
-        mPoints.add(p);
+        points.add(p);
     }
 
     public List<Point> getPoints() {
-        return mPoints;
+        return points;
     }
 
     public int getColor() {
-        return mColor;
+        return color;
     }
 
 	public int getStrokeWidth()
 	{
-		return mStrokeWidth;
+		return strokeWidth;
 	}
 
 	public void setStrokeWidth(int mStrokeWidth)
 	{
-		this.mStrokeWidth = mStrokeWidth;
+		this.strokeWidth = mStrokeWidth;
 	}
 }

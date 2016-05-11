@@ -2,7 +2,7 @@ package co.martinbaciga.drawingtest.domain.model;
 
 public class Board
 {
-	private int mBackgroundColor;
+	private int backgroundColor;
 
 	// Required default constructor for Firebase serialization / deserialization
 	@SuppressWarnings("unused")
@@ -11,16 +11,16 @@ public class Board
 
 	public Board(int mBackgroundColor)
 	{
-		this.mBackgroundColor = mBackgroundColor;
+		this.backgroundColor = mBackgroundColor;
 	}
 
 	public int getBackgroundColor()
 	{
-		return mBackgroundColor;
+		return backgroundColor;
 	}
 
 	public void setBackgroundColor(int mBackgroundColor)
 	{
-		this.mBackgroundColor = mBackgroundColor;
+		this.backgroundColor = mBackgroundColor;
 	}
 }
