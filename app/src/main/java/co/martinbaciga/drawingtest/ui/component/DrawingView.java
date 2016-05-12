@@ -180,7 +180,7 @@ public class DrawingView extends View
 		mDrawPaint.setColor(mPaintColor);
 		mDrawPaint.setAntiAlias(true);
 		mDrawPaint.setDither(true);
-		mDrawPaint.setStrokeWidth(mStrokeWidth);
+		mDrawPaint.setStrokeWidth(mStrokeWidth * mScale);
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -207,7 +207,7 @@ public class DrawingView extends View
 		p.setColor(color);
 		p.setAntiAlias(true);
 		p.setDither(true);
-		p.setStrokeWidth(strokeWidth);
+		p.setStrokeWidth(strokeWidth * mScale);
 		p.setStyle(Paint.Style.STROKE);
 		p.setStrokeJoin(Paint.Join.ROUND);
 		p.setStrokeCap(Paint.Cap.ROUND);
@@ -274,8 +274,6 @@ public class DrawingView extends View
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		mScale = Math.min(1.0f * w / mCanvasWidth, 1.0f * h / mCanvasHeight);
-
-		//mCanvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
 		mCanvasBitmap = Bitmap.createBitmap(Math.round(mCanvasWidth * mScale), Math.round(mCanvasHeight * mScale), Bitmap.Config.ARGB_8888);
 
@@ -479,7 +477,7 @@ public class DrawingView extends View
 	public void setStrokeWidth(int strokeWidth)
 	{
 		mStrokeWidth = strokeWidth;
-		mDrawPaint.setStrokeWidth(mStrokeWidth);
+		mDrawPaint.setStrokeWidth(mStrokeWidth * mScale);
 	}
 
 	public int getStrokeWidth()
