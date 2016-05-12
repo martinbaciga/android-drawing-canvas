@@ -19,6 +19,13 @@ public class Segment
 		this.strokeWidth = strokeWidth;
     }
 
+	public Segment(List<Point> points, int color, int strokeWidth)
+	{
+		this.points = points;
+		this.color = color;
+		this.strokeWidth = strokeWidth;
+	}
+
     public void addPoint(int x, int y) {
         Point p = new Point(x, y);
         points.add(p);
