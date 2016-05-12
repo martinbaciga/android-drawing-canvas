@@ -12,6 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
 
@@ -19,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
@@ -35,12 +40,9 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
-	private android.widget.RelativeLayout.LayoutParams layoutParams;
-
 	private static final int MAX_STROKE_WIDTH = 50;
 
-	private int mDeltaX;
-	private int mDeltaY;
+	private ValueEventListener mConnectedListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +53,44 @@ public class MainActivity extends AppCompatActivity
 		ButterKnife.bind(this);
 
 		initDrawingView();
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		mConnectedListener = DrawingCanvasApplication.getInstance()
+				.getFirebaseRef().getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				boolean connected = (Boolean) dataSnapshot.getValue();
+				if (connected) {
+					Toast.makeText(MainActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+					if (mDrawingView != null)
+					{
+						mDrawingView.syncBoard();
+					}
+				} else {
+					Toast.makeText(MainActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(FirebaseError firebaseError) {
+				// No-op
+			}
+		});
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+
+		DrawingCanvasApplication.getInstance()
+				.getFirebaseRef().getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+		if (mDrawingView != null) {
+			mDrawingView.clearListeners();
+		}
 	}
 
 	@Override

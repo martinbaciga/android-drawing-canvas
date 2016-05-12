@@ -59,8 +59,11 @@ public class DrawingView extends View
 	private Firebase mBoardRef;
 	private Firebase mBackgroundRef;
 	private Firebase mSegmentsRef;
+	private ValueEventListener mBoardListener;
+	private ChildEventListener mSegmentsListener;
 	private Segment mCurrentSegment;
 	private Set<String> mOutstandingSegments;
+	private boolean mCleaningBoard = false;
 
 	public DrawingView(Context context, AttributeSet attrs)
 	{
@@ -75,7 +78,7 @@ public class DrawingView extends View
 		mOutstandingSegments = new HashSet<>();
 		initPaint();
 		initFirebaseRefs();
-		syncBoard();
+		//syncBoard();
 	}
 
 	private void initFirebaseRefs()
@@ -93,9 +96,9 @@ public class DrawingView extends View
 			.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
 	}
 
-	private void syncBoard()
+	public void syncBoard()
 	{
-		mBoardRef.addValueEventListener(new ValueEventListener() {
+		mBoardListener = mBoardRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				Board board = dataSnapshot.getValue(Board.class);
@@ -115,7 +118,7 @@ public class DrawingView extends View
 			}
 		});
 
-		mSegmentsRef.addChildEventListener(new ChildEventListener() {
+		mSegmentsListener = mSegmentsRef.addChildEventListener(new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
 				String name = dataSnapshot.getKey();
@@ -137,7 +140,7 @@ public class DrawingView extends View
 			public void onChildRemoved(DataSnapshot dataSnapshot) {
 				String name = dataSnapshot.getKey();
 
-				if (!mOutstandingSegments.contains(name) && mExtendedPaths.size() > 0)
+				if (!mOutstandingSegments.contains(name) && mExtendedPaths.size() > 0 && !mCleaningBoard)
 				{
 					eraseSegment(name);
 					invalidate();
@@ -244,11 +247,12 @@ public class DrawingView extends View
 
 	private void eraseSegment(String segmentId)
 	{
-		for (ExtendedPath ep : mExtendedPaths)
+		// Used regular for to prevent java.util.ConcurrentModificationException
+		for (int i = 0; i < mExtendedPaths.size(); i++)
 		{
-			if (ep.getSegmentId().matches(segmentId))
+			if (mExtendedPaths.get(i).getSegmentId().matches(segmentId))
 			{
-				mExtendedPaths.remove(ep);
+				mExtendedPaths.remove(mExtendedPaths.get(i));
 			}
 		}
 	}
@@ -409,7 +413,20 @@ public class DrawingView extends View
 
 	private void removeSegments()
 	{
-		mSegmentsRef.removeValue();
+		mCleaningBoard = true;
+
+		mSegmentsRef.removeValue(new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebase)
+			{
+				if (error != null) {
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
+				mCleaningBoard = false;
+			}
+		});
 	}
 
 	private void removeSegment(final String segmentId)
@@ -428,6 +445,12 @@ public class DrawingView extends View
 				mOutstandingSegments.remove(segmentId);
 			}
 		});
+	}
+
+	public void clearListeners()
+	{
+		mBoardRef.removeEventListener(mBoardListener);
+		mSegmentsRef.removeEventListener(mSegmentsListener);
 	}
 
 	public void clearCanvas()
