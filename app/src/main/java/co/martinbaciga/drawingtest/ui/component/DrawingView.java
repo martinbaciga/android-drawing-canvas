@@ -78,7 +78,7 @@ public class DrawingView extends View
 		mOutstandingSegments = new HashSet<>();
 		initPaint();
 		initFirebaseRefs();
-		//syncBoard();
+		syncBoard();
 	}
 
 	private void initFirebaseRefs()
@@ -247,7 +247,7 @@ public class DrawingView extends View
 
 	private void eraseSegment(String segmentId)
 	{
-		// Used regular for to prevent java.util.ConcurrentModificationException
+		// Used regular for iteration to prevent java.util.ConcurrentModificationException
 		for (int i = 0; i < mExtendedPaths.size(); i++)
 		{
 			if (mExtendedPaths.get(i).getSegmentId().matches(segmentId))

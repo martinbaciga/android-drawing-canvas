@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
 
 	private static final int MAX_STROKE_WIDTH = 50;
 
-	private ValueEventListener mConnectedListener;
+	//private ValueEventListener mConnectedListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 	protected void onStart()
 	{
 		super.onStart();
-		mConnectedListener = DrawingCanvasApplication.getInstance()
+		/*mConnectedListener = DrawingCanvasApplication.getInstance()
 				.getFirebaseRef().getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
@@ -79,18 +79,17 @@ public class MainActivity extends AppCompatActivity
 			public void onCancelled(FirebaseError firebaseError) {
 				// No-op
 			}
-		});
+		});*/
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-
-		DrawingCanvasApplication.getInstance()
+		/*DrawingCanvasApplication.getInstance()
 				.getFirebaseRef().getRoot().child(".info/connected").removeEventListener(mConnectedListener);
 		if (mDrawingView != null) {
 			mDrawingView.clearListeners();
-		}
+		}*/
 	}
 
 	@Override
