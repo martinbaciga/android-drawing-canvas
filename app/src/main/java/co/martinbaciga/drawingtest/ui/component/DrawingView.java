@@ -275,6 +275,11 @@ public class DrawingView extends View
 
 		mScale = Math.min(1.0f * w / mCanvasWidth, 1.0f * h / mCanvasHeight);
 
+		if (mDrawPaint != null)
+		{
+			mDrawPaint.setStrokeWidth(mStrokeWidth * mScale);
+		}
+
 		mCanvasBitmap = Bitmap.createBitmap(Math.round(mCanvasWidth * mScale), Math.round(mCanvasHeight * mScale), Bitmap.Config.ARGB_8888);
 
 		mDrawCanvas = new Canvas(mCanvasBitmap);
