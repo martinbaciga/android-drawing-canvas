@@ -11,12 +11,14 @@
         android:id="@+id/relative"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.85">
+        android:layout_weight="0.85"
+        android:background="@android:color/darker_gray">
 
         <co.martinbaciga.drawingtest.ui.component.DrawingView
             android:id="@+id/main_drawing_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

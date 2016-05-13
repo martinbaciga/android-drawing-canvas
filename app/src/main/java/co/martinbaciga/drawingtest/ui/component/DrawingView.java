@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -260,9 +261,7 @@ public class DrawingView extends View
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		canvas.drawColor(Color.DKGRAY);
-
-		drawBackground(canvas, mCanvasBitmap.getWidth(), mCanvasHeight);
+		drawBackground(canvas, mCanvasBitmap.getWidth(), mCanvasBitmap.getHeight());
 		drawPaths(canvas);
 
 		canvas.drawPath(mDrawPath, mDrawPaint);
@@ -281,6 +280,11 @@ public class DrawingView extends View
 		}
 
 		mCanvasBitmap = Bitmap.createBitmap(Math.round(mCanvasWidth * mScale), Math.round(mCanvasHeight * mScale), Bitmap.Config.ARGB_8888);
+
+		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.getLayoutParams();
+		params.width = Math.round(mCanvasWidth * mScale);
+		params.height = Math.round(mCanvasHeight * mScale);
+		this.setLayoutParams(params);
 
 		mDrawCanvas = new Canvas(mCanvasBitmap);
 	}
