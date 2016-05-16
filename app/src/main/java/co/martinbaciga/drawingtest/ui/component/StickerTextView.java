@@ -52,11 +52,6 @@ public class StickerTextView extends StickerView
 		params.gravity = Gravity.CENTER;
 		mText.setLayoutParams(params);
 
-		if(getImageViewFlip() != null)
-		{
-			getImageViewFlip().setVisibility(View.GONE);
-		}
-
 		return mText;
 	}
 
@@ -103,10 +98,5 @@ public class StickerTextView extends StickerView
 	{
 		float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
 		return px/scaledDensity;
-	}
-
-	@Override
-	protected void onScaling(boolean scaleUp) {
-		super.onScaling(scaleUp);
 	}
 }

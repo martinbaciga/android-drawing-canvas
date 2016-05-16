@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void initDrawingView()
 	{
-		mDrawingView.setEnabled(true);
+		mDrawingView.setEnabled(false);
 	}
 
 	private void startFillBackgroundDialog()
