@@ -32,6 +32,7 @@ import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.StickerTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
+import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -226,12 +227,8 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this))
 		{
-			mContainer.setDrawingCacheEnabled(true);
-			mContainer.buildDrawingCache();
-			Bitmap bm = mContainer.getDrawingCache();
-
 			//Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
-			Uri uri = FileManager.saveBitmap(bm);
+			Uri uri = FileManager.saveBitmap(UiUtils.getBitmapFromView(mContainer));
 			startShareDialog(uri);
 		}
 	}
