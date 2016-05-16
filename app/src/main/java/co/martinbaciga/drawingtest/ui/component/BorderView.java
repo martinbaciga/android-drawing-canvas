@@ -3,6 +3,7 @@ package co.martinbaciga.drawingtest.ui.component;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -40,8 +41,9 @@ public class BorderView extends View
 		border.bottom = (int) this.getBottom() - params.bottomMargin;
 		Paint borderPaint = new Paint();
 		borderPaint.setStrokeWidth(6);
-		borderPaint.setColor(Color.LTGRAY);
+		borderPaint.setColor(Color.DKGRAY);
 		borderPaint.setStyle(Paint.Style.STROKE);
+		borderPaint.setPathEffect(new DashPathEffect(new float[] {10,20}, 0));
 		canvas.drawRect(border, borderPaint);
 	}
 }
