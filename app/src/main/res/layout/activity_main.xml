@@ -11,12 +11,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.85">
+        android:layout_weight="0.85"
+        android:background="@android:color/darker_gray">
 
         <co.martinbaciga.drawingtest.ui.component.DrawingView
             android:id="@+id/main_drawing_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"/>
 
         <!--<RelativeLayout
             android:id="@+id/text_container"
@@ -41,10 +43,6 @@
                 android:layout_alignParentRight="true"/>
 
         </RelativeLayout>-->
-
-        <!--<co.martinbaciga.drawingtest.ui.component.ManipulableTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>-->
 
     </FrameLayout>
 

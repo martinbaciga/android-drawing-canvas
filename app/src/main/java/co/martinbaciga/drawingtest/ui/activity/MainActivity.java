@@ -10,7 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
@@ -19,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
@@ -37,15 +43,9 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
-	private android.widget.RelativeLayout.LayoutParams layoutParams;
-
-	private int mCurrentBackgroundColor;
-	private int mCurrentColor;
-	private int mCurrentStroke;
 	private static final int MAX_STROKE_WIDTH = 50;
 
-	private int mDeltaX;
-	private int mDeltaY;
+	//private ValueEventListener mConnectedListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -60,6 +60,43 @@ public class MainActivity extends AppCompatActivity
 		mContainer.addView(tv_sticker);
 
 		initDrawingView();
+	}
+
+	@Override
+	protected void onStart()
+	{
+		super.onStart();
+		/*mConnectedListener = DrawingCanvasApplication.getInstance()
+				.getFirebaseRef().getRoot().child(".info/connected").addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				boolean connected = (Boolean) dataSnapshot.getValue();
+				if (connected) {
+					Toast.makeText(MainActivity.this, "Connected to Firebase", Toast.LENGTH_SHORT).show();
+					if (mDrawingView != null)
+					{
+						mDrawingView.syncBoard();
+					}
+				} else {
+					Toast.makeText(MainActivity.this, "Disconnected from Firebase", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(FirebaseError firebaseError) {
+				// No-op
+			}
+		});*/
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		/*DrawingCanvasApplication.getInstance()
+				.getFirebaseRef().getRoot().child(".info/connected").removeEventListener(mConnectedListener);
+		if (mDrawingView != null) {
+			mDrawingView.clearListeners();
+		}*/
 	}
 
 	@Override
@@ -87,15 +124,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void initDrawingView()
 	{
-		mCurrentBackgroundColor = ContextCompat.getColor(this, android.R.color.white);
-		mCurrentColor = ContextCompat.getColor(this, android.R.color.black);
-		mCurrentStroke = 10;
-
-		mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
-		mDrawingView.setPaintColor(mCurrentColor);
-		mDrawingView.setPaintStrokeWidth(mCurrentStroke);
-
-		mDrawingView.setEnabled(false);
+		mDrawingView.setEnabled(true);
 	}
 
 	private void startFillBackgroundDialog()
@@ -104,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
-				mCurrentBackgroundColor,
+				mDrawingView.getBackgroundColor(),
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
@@ -114,8 +143,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onColorSelected(int color)
 			{
-				mCurrentBackgroundColor = color;
-				mDrawingView.setBackgroundColor(mCurrentBackgroundColor);
+				mDrawingView.setBackgroundColor(color);
 			}
 
 		});
@@ -147,7 +175,7 @@ public class MainActivity extends AppCompatActivity
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
-				mCurrentColor,
+				mDrawingView.getPaintColor(),
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
@@ -157,8 +185,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onColorSelected(int color)
 			{
-				mCurrentColor = color;
-				mDrawingView.setPaintColor(mCurrentColor);
+				mDrawingView.setPaintColor(color);
 			}
 
 		});
@@ -168,15 +195,14 @@ public class MainActivity extends AppCompatActivity
 
 	private void startStrokeSelectorDialog()
 	{
-		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCurrentStroke, MAX_STROKE_WIDTH);
+		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mDrawingView.getStrokeWidth(), MAX_STROKE_WIDTH);
 
 		dialog.setOnStrokeSelectedListener(new StrokeSelectorDialog.OnStrokeSelectedListener()
 		{
 			@Override
 			public void onStrokeSelected(int stroke)
 			{
-				mCurrentStroke = stroke;
-				mDrawingView.setPaintStrokeWidth(mCurrentStroke);
+				mDrawingView.setStrokeWidth(stroke);
 			}
 		});
 
