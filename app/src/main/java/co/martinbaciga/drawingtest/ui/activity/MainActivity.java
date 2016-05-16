@@ -24,6 +24,7 @@ import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.StickerTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
+import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -122,6 +123,24 @@ public class MainActivity extends AppCompatActivity
 		dialog.show(getFragmentManager(), "ColorPickerDialog");
 	}
 
+	private void startTextDialog()
+	{
+		TextDialog dialog = TextDialog.newInstance(null);
+
+		dialog.setOnTextSettedListener(new TextDialog.OnTextSettedListener()
+		{
+			@Override
+			public void onTextSetted(String text)
+			{
+				StickerTextView tv_sticker = new StickerTextView(MainActivity.this);
+				tv_sticker.setText(text);
+				mContainer.addView(tv_sticker);
+			}
+		});
+
+		dialog.show(getSupportFragmentManager(), "TextDialog");
+	}
+
 	private void startColorPickerDialog()
 	{
 		int[] colors = getResources().getIntArray(R.array.palette);
@@ -214,7 +233,7 @@ public class MainActivity extends AppCompatActivity
 	@OnClick(R.id.main_text_iv)
 	public void onTextOptionClick()
 	{
-
+		startTextDialog();
 	}
 
 	@OnClick(R.id.main_color_iv)
