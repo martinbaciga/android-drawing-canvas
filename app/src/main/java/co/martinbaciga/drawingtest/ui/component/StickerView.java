@@ -22,6 +22,9 @@ public abstract class StickerView extends FrameLayout
 	private ImageView mDeleteImageView; private static final String DELETE_IV_TAG = "DeleteImageView";
 	private ImageView mFlipImageView; private static final String FLIP_IV_TAG = "FlipImageView";
 
+	private int mMargin;
+	private int mSize;
+
 	// For scalling
 	private float mOrgX = -1, mOrgY = -1;
 	private float mScaleOrgX = -1, mScaleOrgY = -1;
@@ -65,28 +68,24 @@ public abstract class StickerView extends FrameLayout
 	{
 		mGestureDetector = new GestureDetector(context, new GestureListener());
 
-		this.mBorderImageView = new BorderView(context);
-		this.mScaleImageView = new ImageView(context);
-		this.mDeleteImageView = new ImageView(context);
-		this.mFlipImageView = new ImageView(context);
+		mMargin = SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext()) / 2;
+		mSize = SystemUtils.convertDpToPixel(SELF_SIZE_DP, getContext());
 
-		this.mScaleImageView.setImageResource(R.drawable.zoominout);
-		this.mDeleteImageView.setImageResource(R.drawable.remove);
-		this.mFlipImageView.setImageResource(R.drawable.flip);
+		initMain(context);
+		initBorder(context);
+		initScaleButton(context);
+		initDeleteButton(context);
+		initFlipButton(context);
+	}
 
+	private void initMain(Context context)
+	{
 		this.setTag(TAG);
-		this.mBorderImageView.setTag(BORDER_IV_TAG);
-		this.mScaleImageView.setTag(SCALE_IV_TAG);
-		this.mDeleteImageView.setTag(DELETE_IV_TAG);
-		this.mFlipImageView.setTag(FLIP_IV_TAG);
-
-		int margin = SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext()) / 2;
-		int size = SystemUtils.convertDpToPixel(SELF_SIZE_DP, getContext());
 
 		LayoutParams this_params =
 				new LayoutParams(
-						size,
-						size
+						mSize,
+						mSize
 				);
 		this_params.gravity = Gravity.CENTER;
 
@@ -95,14 +94,34 @@ public abstract class StickerView extends FrameLayout
 						ViewGroup.LayoutParams.MATCH_PARENT,
 						ViewGroup.LayoutParams.MATCH_PARENT
 				);
-		iv_main_params.setMargins(margin, margin, margin, margin);
+		iv_main_params.setMargins(mMargin, mMargin, mMargin, mMargin);
+
+		this.setLayoutParams(this_params);
+		this.addView(getMainView(), iv_main_params);
+
+		this.setOnTouchListener(mTouchListener);
+	}
+
+	private void initBorder(Context context)
+	{
+		this.mBorderImageView = new BorderView(context);
+		this.mBorderImageView.setTag(BORDER_IV_TAG);
 
 		LayoutParams iv_border_params =
 				new LayoutParams(
 						ViewGroup.LayoutParams.MATCH_PARENT,
 						ViewGroup.LayoutParams.MATCH_PARENT
 				);
-		iv_border_params.setMargins(margin, margin, margin, margin);
+		iv_border_params.setMargins(mMargin, mMargin, mMargin, mMargin);
+
+		this.addView(mBorderImageView, iv_border_params);
+	}
+
+	private void initScaleButton(Context context)
+	{
+		this.mScaleImageView = new ImageView(context);
+		this.mScaleImageView.setImageResource(R.drawable.zoominout);
+		this.mScaleImageView.setTag(SCALE_IV_TAG);
 
 		LayoutParams iv_scale_params =
 				new LayoutParams(
@@ -111,6 +130,16 @@ public abstract class StickerView extends FrameLayout
 				);
 		iv_scale_params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
 
+		this.addView(mScaleImageView, iv_scale_params);
+		this.mScaleImageView.setOnTouchListener(mTouchListener);
+	}
+
+	private void initDeleteButton(Context context)
+	{
+		this.mDeleteImageView = new ImageView(context);
+		this.mDeleteImageView.setImageResource(R.drawable.remove);
+		this.mDeleteImageView.setTag(DELETE_IV_TAG);
+
 		LayoutParams iv_delete_params =
 				new LayoutParams(
 						SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext()),
@@ -118,21 +147,7 @@ public abstract class StickerView extends FrameLayout
 				);
 		iv_delete_params.gravity = Gravity.TOP | Gravity.RIGHT;
 
-		LayoutParams iv_flip_params =
-				new LayoutParams(
-						SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext()),
-						SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext())
-				);
-		iv_flip_params.gravity = Gravity.TOP | Gravity.LEFT;
-
-		this.setLayoutParams(this_params);
-		this.addView(getMainView(), iv_main_params);
-		this.addView(mBorderImageView, iv_border_params);
-		this.addView(mScaleImageView, iv_scale_params);
 		this.addView(mDeleteImageView, iv_delete_params);
-		this.addView(mFlipImageView, iv_flip_params);
-		this.setOnTouchListener(mTouchListener);
-		this.mScaleImageView.setOnTouchListener(mTouchListener);
 
 		this.mDeleteImageView.setOnClickListener(new OnClickListener()
 		{
@@ -142,6 +157,22 @@ public abstract class StickerView extends FrameLayout
 				delete();
 			}
 		});
+	}
+
+	private void initFlipButton(Context context)
+	{
+		this.mFlipImageView = new ImageView(context);
+		this.mFlipImageView.setImageResource(R.drawable.flip);
+		this.mFlipImageView.setTag(FLIP_IV_TAG);
+
+		LayoutParams iv_flip_params =
+				new LayoutParams(
+						SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext()),
+						SystemUtils.convertDpToPixel(BUTTON_SIZE_DP, getContext())
+				);
+		iv_flip_params.gravity = Gravity.TOP | Gravity.LEFT;
+
+		this.addView(mFlipImageView, iv_flip_params);
 
 		this.mFlipImageView.setOnClickListener(new OnClickListener()
 		{
