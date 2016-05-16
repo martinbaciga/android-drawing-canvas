@@ -9,13 +9,14 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import co.martinbaciga.drawingtest.R;
 
-public class ManipulableTextView extends RelativeLayout implements View.OnTouchListener
+public class ManipulableTextView extends FrameLayout implements View.OnTouchListener
 {
 	private int mPosX;
 	private int mPosY;
@@ -85,7 +86,7 @@ public class ManipulableTextView extends RelativeLayout implements View.OnTouchL
 				case MotionEvent.ACTION_UP:
 					break;
 				case MotionEvent.ACTION_MOVE:
-					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) this.getLayoutParams();
+					FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.getLayoutParams();
 					layoutParams.width = x - mWidth;
 					layoutParams.height = y - mHeight;
 					this.setLayoutParams(layoutParams);

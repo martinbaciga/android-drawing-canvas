@@ -7,8 +7,8 @@
     android:orientation="vertical"
     tools:context=".ui.activity.MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/relative"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.85">
@@ -42,11 +42,11 @@
 
         </RelativeLayout>-->
 
-        <co.martinbaciga.drawingtest.ui.component.ManipulableTextView
+        <!--<co.martinbaciga.drawingtest.ui.component.ManipulableTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"/>-->
 
-    </RelativeLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
