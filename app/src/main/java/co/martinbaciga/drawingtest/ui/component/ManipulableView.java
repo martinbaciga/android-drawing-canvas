@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import co.martinbaciga.drawingtest.R;
 import co.martinbaciga.drawingtest.ui.util.SystemUtils;
 
-public abstract class StickerView extends FrameLayout
+public abstract class ManipulableView extends FrameLayout
 {
 	private static final String TAG = "DraggableViewGroup";
 	private BorderView mBorderImageView; private static final String BORDER_IV_TAG = "BorderImageView";
@@ -46,19 +46,19 @@ public abstract class StickerView extends FrameLayout
 
 	GestureDetector mGestureDetector;
 
-	public StickerView(Context context)
+	public ManipulableView(Context context)
 	{
 		super(context);
 		init(context);
 	}
 
-	public StickerView(Context context, AttributeSet attrs)
+	public ManipulableView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
 		init(context);
 	}
 
-	public StickerView(Context context, AttributeSet attrs, int defStyle)
+	public ManipulableView(Context context, AttributeSet attrs, int defStyle)
 	{
 		super(context, attrs, defStyle);
 		init(context);
@@ -223,8 +223,8 @@ public abstract class StickerView extends FrameLayout
 			case MotionEvent.ACTION_MOVE:
 				float offsetX = event.getRawX() - mMoveOrgX;
 				float offsetY = event.getRawY() - mMoveOrgY;
-				StickerView.this.setX(StickerView.this.getX() + offsetX);
-				StickerView.this.setY(StickerView.this.getY() + offsetY);
+				ManipulableView.this.setX(ManipulableView.this.getX() + offsetX);
+				ManipulableView.this.setY(ManipulableView.this.getY() + offsetY);
 				mMoveOrgX = event.getRawX();
 				mMoveOrgY = event.getRawY();
 				break;
@@ -256,10 +256,10 @@ public abstract class StickerView extends FrameLayout
 
 	private void delete()
 	{
-		if (StickerView.this.getParent() != null)
+		if (ManipulableView.this.getParent() != null)
 		{
-			ViewGroup myCanvas = ((ViewGroup) StickerView.this.getParent());
-			myCanvas.removeView(StickerView.this);
+			ViewGroup myCanvas = ((ViewGroup) ManipulableView.this.getParent());
+			myCanvas.removeView(ManipulableView.this);
 		}
 	}
 
@@ -273,20 +273,20 @@ public abstract class StickerView extends FrameLayout
 
 	private void manageMovement(MotionEvent event)
 	{
-		mOrgX = StickerView.this.getX();
-		mOrgY = StickerView.this.getY();
+		mOrgX = ManipulableView.this.getX();
+		mOrgY = ManipulableView.this.getY();
 
 		mScaleOrgX = event.getRawX();
 		mScaleOrgY = event.getRawY();
-		mScaleOrgWidth = StickerView.this.getLayoutParams().width;
-		mScaleOrgHeight = StickerView.this.getLayoutParams().height;
+		mScaleOrgWidth = ManipulableView.this.getLayoutParams().width;
+		mScaleOrgHeight = ManipulableView.this.getLayoutParams().height;
 
 		mRotateOrgX = event.getRawX();
 		mRotateOrgY = event.getRawY();
 
-		mCenterX = StickerView.this.getX() +
-				((View) StickerView.this.getParent()).getX() +
-				(float) StickerView.this.getWidth() / 2;
+		mCenterX = ManipulableView.this.getX() +
+				((View) ManipulableView.this.getParent()).getX() +
+				(float) ManipulableView.this.getWidth() / 2;
 
 
 		//double statusBarHeight = Math.ceil(25 * getContext().getResources().getDisplayMetrics().density);
@@ -297,10 +297,10 @@ public abstract class StickerView extends FrameLayout
 			result = getResources().getDimensionPixelSize(resourceId);
 		}
 		double statusBarHeight = result;
-		mCenterY = StickerView.this.getY() +
-				((View) StickerView.this.getParent()).getY() +
+		mCenterY = ManipulableView.this.getY() +
+				((View) ManipulableView.this.getParent()).getY() +
 				statusBarHeight +
-				(float) StickerView.this.getHeight() / 2;
+				(float) ManipulableView.this.getHeight() / 2;
 	}
 
 	private void manageScale(MotionEvent event)
@@ -321,22 +321,22 @@ public abstract class StickerView extends FrameLayout
 			double offsetY = Math.abs(event.getRawY() - mScaleOrgY);
 			double offset = Math.max(offsetX, offsetY);
 			offset = Math.round(offset);
-			StickerView.this.getLayoutParams().width += offset;
-			StickerView.this.getLayoutParams().height += offset;
+			ManipulableView.this.getLayoutParams().width += offset;
+			ManipulableView.this.getLayoutParams().height += offset;
 			//DraggableViewGroup.this.setX((float) (getX() - offset / 2));
 			//DraggableViewGroup.this.setY((float) (getY() - offset / 2));
 		} else if (length2 < length1
 				&& (angle_diff < 25 || Math.abs(angle_diff - 180) < 25)
-				&& StickerView.this.getLayoutParams().width > size / 2
-				&& StickerView.this.getLayoutParams().height > size / 2)
+				&& ManipulableView.this.getLayoutParams().width > size / 2
+				&& ManipulableView.this.getLayoutParams().height > size / 2)
 		{
 			// Scale down
 			double offsetX = Math.abs(event.getRawX() - mScaleOrgX);
 			double offsetY = Math.abs(event.getRawY() - mScaleOrgY);
 			double offset = Math.max(offsetX, offsetY);
 			offset = Math.round(offset);
-			StickerView.this.getLayoutParams().width -= offset;
-			StickerView.this.getLayoutParams().height -= offset;
+			ManipulableView.this.getLayoutParams().width -= offset;
+			ManipulableView.this.getLayoutParams().height -= offset;
 		}
 
 		mScaleOrgX = event.getRawX();

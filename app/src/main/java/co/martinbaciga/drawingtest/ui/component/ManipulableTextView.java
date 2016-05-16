@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-public class StickerTextView extends StickerView
+public class ManipulableTextView extends ManipulableView
 {
 	private AutoResizeTextView mText;
 
@@ -17,15 +17,15 @@ public class StickerTextView extends StickerView
 	private static final int TEXT_GRAVITY = Gravity.LEFT;
 	private static final float TEXT_SIZE = 50;
 
-	public StickerTextView(Context context) {
+	public ManipulableTextView(Context context) {
 		super(context);
 	}
 
-	public StickerTextView(Context context, AttributeSet attrs) {
+	public ManipulableTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public StickerTextView(Context context, AttributeSet attrs, int defStyle) {
+	public ManipulableTextView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 

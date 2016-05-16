@@ -2,21 +2,14 @@ package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
@@ -25,11 +18,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
-import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
-import co.martinbaciga.drawingtest.ui.component.StickerTextView;
+import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 import co.martinbaciga.drawingtest.ui.util.UiUtils;
@@ -57,7 +49,7 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		StickerTextView tv_sticker = new StickerTextView(MainActivity.this);
+		ManipulableTextView tv_sticker = new ManipulableTextView(MainActivity.this);
 		tv_sticker.setText("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 		mContainer.addView(tv_sticker);
 
@@ -162,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onTextSetted(String text)
 			{
-				StickerTextView tv_sticker = new StickerTextView(MainActivity.this);
+				ManipulableTextView tv_sticker = new ManipulableTextView(MainActivity.this);
 				tv_sticker.setText(text);
 				mContainer.addView(tv_sticker);
 			}
