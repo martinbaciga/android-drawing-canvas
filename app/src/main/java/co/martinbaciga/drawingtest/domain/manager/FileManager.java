@@ -27,7 +27,7 @@ public class FileManager
 		FileOutputStream fOut;
 		try {
 			fOut = new FileOutputStream(file);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+			bitmap.compress(Bitmap.CompressFormat.PNG, 90, fOut);
 			fOut.flush();
 			fOut.close();
 			return Uri.fromFile(file);

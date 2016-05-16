@@ -5,44 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.activity.MainActivity">
+    tools:context=".ui.activity.MainActivity"
+    android:background="@android:color/darker_gray">
 
     <FrameLayout
         android:id="@+id/container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.85"
-        android:background="@android:color/darker_gray">
+        android:layout_gravity="center">
 
         <co.martinbaciga.drawingtest.ui.component.DrawingView
             android:id="@+id/main_drawing_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"/>
-
-        <!--<RelativeLayout
-            android:id="@+id/text_container"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:background="@color/green">
-
-            <TextView
-                android:id="@+id/main_text_example"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                android:textSize="20sp"
-                android:padding="10dp"/>
-
-            <ImageView
-                android:id="@+id/text_resize_iv"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:background="@color/red"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"/>
-
-        </RelativeLayout>-->
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 

@@ -2,6 +2,7 @@ package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -225,7 +226,12 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this))
 		{
-			Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+			mContainer.setDrawingCacheEnabled(true);
+			mContainer.buildDrawingCache();
+			Bitmap bm = mContainer.getDrawingCache();
+
+			//Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+			Uri uri = FileManager.saveBitmap(bm);
 			startShareDialog(uri);
 		}
 	}

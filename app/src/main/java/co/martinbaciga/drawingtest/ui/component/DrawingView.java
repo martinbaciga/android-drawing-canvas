@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.firebase.client.ChildEventListener;
@@ -281,7 +282,7 @@ public class DrawingView extends View
 
 		mCanvasBitmap = Bitmap.createBitmap(Math.round(mCanvasWidth * mScale), Math.round(mCanvasHeight * mScale), Bitmap.Config.ARGB_8888);
 
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.getLayoutParams();
+		FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) this.getLayoutParams();
 		params.width = Math.round(mCanvasWidth * mScale);
 		params.height = Math.round(mCanvasHeight * mScale);
 		this.setLayoutParams(params);
