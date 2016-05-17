@@ -21,6 +21,7 @@ import co.martinbaciga.drawingtest.R;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
+import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
@@ -49,9 +50,9 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		ManipulableTextView tv_sticker = new ManipulableTextView(MainActivity.this);
-		tv_sticker.setText("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
-		mContainer.addView(tv_sticker);
+		/*ManipulableImageView iv_sticker = new ManipulableImageView(MainActivity.this);
+		iv_sticker.setImageDrawable(getResources().getDrawable(R.drawable.messi));
+		mContainer.addView(iv_sticker);*/
 
 		initDrawingView();
 	}
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void initDrawingView()
 	{
-		mDrawingView.setEnabled(false);
+		mDrawingView.setEnabled(true);
 	}
 
 	private void startFillBackgroundDialog()
