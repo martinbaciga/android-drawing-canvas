@@ -67,6 +67,12 @@ public class DrawingView extends View
 	private Set<String> mOutstandingSegments;
 	private boolean mCleaningBoard = false;
 
+	public DrawingView(Context context)
+	{
+		super(context);
+		init();
+	}
+
 	public DrawingView(Context context, AttributeSet attrs)
 	{
 		super(context, attrs);
@@ -314,8 +320,10 @@ public class DrawingView extends View
 			}
 
 			invalidate();
+			return true;
+		} else {
+			return false;
 		}
-		return true;
 	}
 
 	private void onTouchDown(float touchX, float touchY)
