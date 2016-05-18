@@ -34,7 +34,7 @@ import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
 
 public class DrawingView extends View
 {
-	public static final int PIXEL_SIZE = 3;
+	public static final int PIXEL_SIZE = 1;
 	private int mCanvasWidth = 74;
 	private int mCanvasHeight = 105;
 	private float mScale = 1.0f;

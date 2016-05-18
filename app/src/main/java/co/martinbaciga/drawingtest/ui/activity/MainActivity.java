@@ -2,6 +2,7 @@ package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
 	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
-	private static final int MAX_STROKE_WIDTH = 50;
+	private static final int MAX_STROKE_WIDTH = 10;
 
 	//private ValueEventListener mConnectedListener;
 
@@ -50,9 +51,17 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		/*ManipulableImageView iv_sticker = new ManipulableImageView(MainActivity.this);
+		/*mDrawingView.setEnabled(false);
+
+		ManipulableImageView iv_sticker = new ManipulableImageView(MainActivity.this);
 		iv_sticker.setImageDrawable(getResources().getDrawable(R.drawable.messi));
-		mContainer.addView(iv_sticker);*/
+		mContainer.addView(iv_sticker);
+
+		DrawingView drawingView = new DrawingView(this, true);
+		mContainer.addView(drawingView);
+		drawingView.setBackgroundColor(Color.TRANSPARENT);
+		drawingView.setEnabled(true);*/
+
 
 		initDrawingView();
 	}
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity
 
 	private void initDrawingView()
 	{
-		mDrawingView.setEnabled(true);
+		//mDrawingView.setEnabled(true);
 	}
 
 	private void startFillBackgroundDialog()
