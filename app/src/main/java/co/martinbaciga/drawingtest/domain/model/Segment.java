@@ -26,7 +26,7 @@ public class Segment
 		this.strokeWidth = strokeWidth;
 	}
 
-    public void addPoint(int x, int y) {
+    public void addPoint(float x, float y) {
         Point p = new Point(x, y);
         points.add(p);
     }

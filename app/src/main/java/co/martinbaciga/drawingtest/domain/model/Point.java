@@ -2,24 +2,24 @@ package co.martinbaciga.drawingtest.domain.model;
 
 public class Point
 {
-    int x;
-    int y;
+    float x;
+    float y;
 
     // Required default constructor for Firebase serialization / deserialization
     @SuppressWarnings("unused")
     private Point() {
     }
 
-    public Point(int x, int y) {
+    public Point(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 }

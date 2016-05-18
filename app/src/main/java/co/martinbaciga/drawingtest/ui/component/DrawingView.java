@@ -35,8 +35,8 @@ import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
 public class DrawingView extends View
 {
 	public static final int PIXEL_SIZE = 3;
-	private int mCanvasWidth = 2160;
-	private int mCanvasHeight = 3552;
+	private int mCanvasWidth = 74;
+	private int mCanvasHeight = 105;
 	private float mScale = 1.0f;
 
 	private int mLastX;
@@ -54,8 +54,9 @@ public class DrawingView extends View
 	// Set default values
 	private int mBackgroundColor = Color.WHITE;
 	private int mPaintColor = Color.BLACK;
-	private int mStrokeWidth = 8;
+	private int mStrokeWidth = 2;
 	private boolean mEnabled = true;
+	private boolean mNoBackground = false;
 
 	// Firebase
 	private Firebase mBoardRef;
@@ -67,9 +68,10 @@ public class DrawingView extends View
 	private Set<String> mOutstandingSegments;
 	private boolean mCleaningBoard = false;
 
-	public DrawingView(Context context)
+	public DrawingView(Context context, boolean noBackground)
 	{
 		super(context);
+		mNoBackground = noBackground;
 		init();
 	}
 
@@ -86,7 +88,8 @@ public class DrawingView extends View
 		mOutstandingSegments = new HashSet<>();
 		initPaint();
 		initFirebaseRefs();
-		syncBoard();
+		if (!mNoBackground)
+			syncBoard();
 	}
 
 	private void initFirebaseRefs()
@@ -106,32 +109,38 @@ public class DrawingView extends View
 
 	public void syncBoard()
 	{
-		mBoardListener = mBoardRef.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(DataSnapshot dataSnapshot) {
-				Board board = dataSnapshot.getValue(Board.class);
+		if (!mNoBackground)
+		{
+			mBoardListener = mBoardRef.addValueEventListener(new ValueEventListener()
+			{
+				@Override
+				public void onDataChange(DataSnapshot dataSnapshot)
+				{
+					Board board = dataSnapshot.getValue(Board.class);
 
-				if (board != null)
-				{
-					setBackgroundColor(board.getBackgroundColor());
-				} else
-				{
-					saveBoard();
+					if (board != null)
+					{
+						setBackgroundColor(board.getBackgroundColor());
+					} else
+					{
+						saveBoard();
+					}
 				}
-			}
 
-			@Override
-			public void onCancelled(FirebaseError firebaseError) {
-				// No-op
-			}
-		});
+				@Override
+				public void onCancelled(FirebaseError firebaseError)
+				{
+					// No-op
+				}
+			});
+		}
 
 		mSegmentsListener = mSegmentsRef.addChildEventListener(new ChildEventListener() {
 			@Override
 			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
 				String name = dataSnapshot.getKey();
 
-				if (!mOutstandingSegments.contains(name))
+				if (!mOutstandingSegments.contains(name) && mEnabled)
 				{
 					Segment segment = dataSnapshot.getValue(Segment.class);
 					drawSegment(segment, createPaint(segment.getColor(), segment.getStrokeWidth()), dataSnapshot.getKey());
@@ -148,7 +157,7 @@ public class DrawingView extends View
 			public void onChildRemoved(DataSnapshot dataSnapshot) {
 				String name = dataSnapshot.getKey();
 
-				if (!mOutstandingSegments.contains(name) && mExtendedPaths.size() > 0 && !mCleaningBoard)
+				if (!mOutstandingSegments.contains(name) && mExtendedPaths.size() > 0 && !mCleaningBoard && mEnabled)
 				{
 					eraseSegment(name);
 					invalidate();
@@ -229,26 +238,25 @@ public class DrawingView extends View
 		mExtendedPaths.add(new ExtendedPath(getPathFromPoints(segment.getPoints(), mScale), segment.getPoints(), paint, segmentId));
 	}
 
-	private Path getPathFromPoints(List<Point> points, double scale) {
+	private Path getPathFromPoints(List<Point> points, float scale) {
 		Path path = new Path();
 		scale = scale * PIXEL_SIZE;
 		Point current = points.get(0);
-		path.moveTo(Math.round(scale * current.getX()), Math.round(scale * current.getY()));
+		path.moveTo(scale * current.getX(), scale * current.getY());
 		Point next = null;
 		for (int i = 1; i < points.size(); ++i) {
 			next = points.get(i);
 			path.quadTo(
-					Math.round(scale * current.getX()), Math.round(scale * current.getY()),
-					Math.round(scale * (next.getX() + current.getX()) / 2), Math.round(scale * (next.getY() + current.getY()) / 2)
-			);
+					scale * current.getX(), scale * current.getY(),
+					scale * ((next.getX() + current.getX())/2), scale * ((next.getY() + current.getY())/2));
 			current = next;
 		}
 		if (next != null)
 		{
-			path.lineTo(Math.round(scale * next.getX()), Math.round(scale * next.getY()));
+			path.lineTo(scale * next.getX(), scale * next.getY());
 		} else if (current != null && next == null)
 		{
-			path.lineTo(Math.round(scale * current.getX()), Math.round(scale * current.getY()));
+			path.lineTo(scale * current.getX(), scale * current.getY());
 		}
 		return path;
 	}
@@ -354,7 +362,11 @@ public class DrawingView extends View
 
 	private void onTouchUp(float touchX, float touchY)
 	{
-		String segmentId = saveSegment();
+		String segmentId = "";
+		if (mEnabled)
+		{
+			segmentId = saveSegment();
+		}
 		mDrawPath.lineTo(mLastX * PIXEL_SIZE, mLastY * PIXEL_SIZE);
 		mExtendedPaths.add(new ExtendedPath(mDrawPath, mCurrentSegment.getPoints(), mDrawPaint, segmentId));
 		mDrawPath = new Path();
@@ -366,7 +378,7 @@ public class DrawingView extends View
 		// scaled version of the segment, so that it matches the size of the board
 		Segment segment = new Segment(mCurrentSegment.getColor(), mCurrentSegment.getStrokeWidth());
 		for (Point point : mCurrentSegment.getPoints()) {
-			segment.addPoint(Math.round(point.getX() / mScale), Math.round(point.getY() / mScale));
+			segment.addPoint(point.getX() / mScale, point.getY() / mScale);
 		}
 
 		Firebase segmentRef = mSegmentsRef.push();
@@ -392,7 +404,7 @@ public class DrawingView extends View
 	{
 		Segment segment = new Segment(extendedPath.getPaint().getColor(), (int)extendedPath.getPaint().getStrokeWidth());
 		for (Point point : extendedPath.getPoints()) {
-			segment.addPoint(Math.round(point.getX() / mScale), Math.round(point.getY() / mScale));
+			segment.addPoint(point.getX() / mScale, point.getY() / mScale);
 		}
 
 		Firebase segmentRef = mSegmentsRef.push();
@@ -416,15 +428,21 @@ public class DrawingView extends View
 
 	private void saveBackgroundColorChange()
 	{
-		mBackgroundRef.setValue(mBackgroundColor, new Firebase.CompletionListener() {
-			@Override
-			public void onComplete(FirebaseError error, Firebase firebaseRef) {
-				if (error != null) {
-					Log.e("AndroidDrawing", error.toString());
-					throw error.toException();
+		if (!mNoBackground)
+		{
+			mBackgroundRef.setValue(mBackgroundColor, new Firebase.CompletionListener()
+			{
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebaseRef)
+				{
+					if (error != null)
+					{
+						Log.e("AndroidDrawing", error.toString());
+						throw error.toException();
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	private void removeSegments()
