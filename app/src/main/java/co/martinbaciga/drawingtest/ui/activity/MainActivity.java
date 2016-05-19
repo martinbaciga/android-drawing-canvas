@@ -2,6 +2,8 @@ package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -34,8 +36,9 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_manipulate_iv) ImageView mManipulateImageView;
 	@Bind(R.id.container) FrameLayout mContainer;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
-	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
 	@Bind(R.id.main_text_iv) ImageView mTextImageView;
+	@Bind(R.id.main_image_iv) ImageView mImageImageView;
+	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
 	@Bind(R.id.main_color_iv) ImageView mColorImageView;
 	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
@@ -257,16 +260,23 @@ public class MainActivity extends AppCompatActivity
 		mLayerManager.changeManipulateState();
 	}
 
-	@OnClick(R.id.main_fill_iv)
-	public void onBackgroundFillOptionClick()
-	{
-		startFillBackgroundDialog();
-	}
-
 	@OnClick(R.id.main_text_iv)
 	public void onTextOptionClick()
 	{
 		startTextDialog();
+	}
+
+	@OnClick(R.id.main_image_iv)
+	public void onImageOptionClick()
+	{
+		Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
+		mLayerManager.addImageComponent(image);
+	}
+
+	@OnClick(R.id.main_fill_iv)
+	public void onBackgroundFillOptionClick()
+	{
+		startFillBackgroundDialog();
 	}
 
 	@OnClick(R.id.main_color_iv)

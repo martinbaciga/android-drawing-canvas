@@ -1,6 +1,7 @@
 package co.martinbaciga.drawingtest.ui.manager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -8,6 +9,7 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
+import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableView;
 
@@ -47,6 +49,24 @@ public class LayerManager
 
 		mManipulableViews.add(tv);
 		mLayers.add(tv);
+
+		addDrawingLayer();
+	}
+
+	public void addImageComponent(Bitmap bitmap)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableImageView iv = new ManipulableImageView(mContext);
+		iv.setImageBitmap(bitmap);
+		iv.setControlItemsHidden(true);
+		mRoot.addView(iv);
+
+		mManipulableViews.add(iv);
+		mLayers.add(iv);
 
 		addDrawingLayer();
 	}
