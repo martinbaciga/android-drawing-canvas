@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -89,7 +88,9 @@ public class DrawingView extends View
 		initPaint();
 		initFirebaseRefs();
 		if (!mNoBackground)
+		{
 			syncBoard();
+		}
 	}
 
 	private void initFirebaseRefs()
@@ -99,12 +100,12 @@ public class DrawingView extends View
 				.child(FireBaseDBConstants.FIREBASE_DB_BOARD);
 
 		mSegmentsRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
-			.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
-			.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
 
 		mBackgroundRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
-			.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
-			.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
 	}
 
 	public void syncBoard()
@@ -135,9 +136,11 @@ public class DrawingView extends View
 			});
 		}
 
-		mSegmentsListener = mSegmentsRef.addChildEventListener(new ChildEventListener() {
+		mSegmentsListener = mSegmentsRef.addChildEventListener(new ChildEventListener()
+		{
 			@Override
-			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+			public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName)
+			{
 				String name = dataSnapshot.getKey();
 
 				if (!mOutstandingSegments.contains(name) && mEnabled)
@@ -149,12 +152,14 @@ public class DrawingView extends View
 			}
 
 			@Override
-			public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+			public void onChildChanged(DataSnapshot dataSnapshot, String s)
+			{
 				// No-op
 			}
 
 			@Override
-			public void onChildRemoved(DataSnapshot dataSnapshot) {
+			public void onChildRemoved(DataSnapshot dataSnapshot)
+			{
 				String name = dataSnapshot.getKey();
 
 				if (!mOutstandingSegments.contains(name) && mExtendedPaths.size() > 0 && !mCleaningBoard && mEnabled)
@@ -165,12 +170,14 @@ public class DrawingView extends View
 			}
 
 			@Override
-			public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+			public void onChildMoved(DataSnapshot dataSnapshot, String s)
+			{
 				// No-op
 			}
 
 			@Override
-			public void onCancelled(FirebaseError firebaseError) {
+			public void onCancelled(FirebaseError firebaseError)
+			{
 				// No-op
 			}
 		});
@@ -180,10 +187,13 @@ public class DrawingView extends View
 	{
 		Board board = new Board(mBackgroundColor);
 
-		mBoardRef.setValue(board, new Firebase.CompletionListener() {
+		mBoardRef.setValue(board, new Firebase.CompletionListener()
+		{
 			@Override
-			public void onComplete(FirebaseError error, Firebase firebaseRef) {
-				if (error != null) {
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
 					Log.e("AndroidDrawing", error.toString());
 					throw error.toException();
 				}
@@ -231,24 +241,27 @@ public class DrawingView extends View
 		return p;
 	}
 
-	private void drawSegment(Segment segment, Paint paint, String segmentId) {
+	private void drawSegment(Segment segment, Paint paint, String segmentId)
+	{
 		/*if (mBuffer != null) {
 			mBuffer.drawPath(getPathForPoints(segment.getPoints(), mScale), paint);
 		}*/
 		mExtendedPaths.add(new ExtendedPath(getPathFromPoints(segment.getPoints(), mScale), segment.getPoints(), paint, segmentId));
 	}
 
-	private Path getPathFromPoints(List<Point> points, float scale) {
+	private Path getPathFromPoints(List<Point> points, float scale)
+	{
 		Path path = new Path();
 		scale = scale * PIXEL_SIZE;
 		Point current = points.get(0);
 		path.moveTo(scale * current.getX(), scale * current.getY());
 		Point next = null;
-		for (int i = 1; i < points.size(); ++i) {
+		for (int i = 1; i < points.size(); ++i)
+		{
 			next = points.get(i);
 			path.quadTo(
 					scale * current.getX(), scale * current.getY(),
-					scale * ((next.getX() + current.getX())/2), scale * ((next.getY() + current.getY())/2));
+					scale * ((next.getX() + current.getX()) / 2), scale * ((next.getY() + current.getY()) / 2));
 			current = next;
 		}
 		if (next != null)
@@ -329,7 +342,8 @@ public class DrawingView extends View
 
 			invalidate();
 			return true;
-		} else {
+		} else
+		{
 			return false;
 		}
 	}
@@ -351,7 +365,8 @@ public class DrawingView extends View
 
 		float dx = Math.abs(x - mLastX);
 		float dy = Math.abs(y - mLastY);
-		if (dx >= 1 || dy >= 1) {
+		if (dx >= 1 || dy >= 1)
+		{
 			mDrawPath.quadTo(mLastX * PIXEL_SIZE, mLastY * PIXEL_SIZE, ((x + mLastX) * PIXEL_SIZE) / 2, ((y + mLastY) * PIXEL_SIZE) / 2);
 			mLastX = x;
 			mLastY = y;
@@ -377,7 +392,8 @@ public class DrawingView extends View
 	{
 		// scaled version of the segment, so that it matches the size of the board
 		Segment segment = new Segment(mCurrentSegment.getColor(), mCurrentSegment.getStrokeWidth());
-		for (Point point : mCurrentSegment.getPoints()) {
+		for (Point point : mCurrentSegment.getPoints())
+		{
 			segment.addPoint(point.getX() / mScale, point.getY() / mScale);
 		}
 
@@ -386,10 +402,13 @@ public class DrawingView extends View
 		final String segmentId = segmentRef.getKey();
 		mOutstandingSegments.add(segmentId);
 
-		segmentRef.setValue(segment, new Firebase.CompletionListener() {
+		segmentRef.setValue(segment, new Firebase.CompletionListener()
+		{
 			@Override
-			public void onComplete(FirebaseError error, Firebase firebaseRef) {
-				if (error != null) {
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
 					Log.e("AndroidDrawing", error.toString());
 					throw error.toException();
 				}
@@ -402,8 +421,9 @@ public class DrawingView extends View
 
 	private String saveSegment(ExtendedPath extendedPath)
 	{
-		Segment segment = new Segment(extendedPath.getPaint().getColor(), (int)extendedPath.getPaint().getStrokeWidth());
-		for (Point point : extendedPath.getPoints()) {
+		Segment segment = new Segment(extendedPath.getPaint().getColor(), (int) extendedPath.getPaint().getStrokeWidth());
+		for (Point point : extendedPath.getPoints())
+		{
 			segment.addPoint(point.getX() / mScale, point.getY() / mScale);
 		}
 
@@ -412,10 +432,13 @@ public class DrawingView extends View
 		final String segmentId = segmentRef.getKey();
 		mOutstandingSegments.add(segmentId);
 
-		segmentRef.setValue(segment, new Firebase.CompletionListener() {
+		segmentRef.setValue(segment, new Firebase.CompletionListener()
+		{
 			@Override
-			public void onComplete(FirebaseError error, Firebase firebaseRef) {
-				if (error != null) {
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
 					Log.e("AndroidDrawing", error.toString());
 					throw error.toException();
 				}
@@ -454,7 +477,8 @@ public class DrawingView extends View
 			@Override
 			public void onComplete(FirebaseError error, Firebase firebase)
 			{
-				if (error != null) {
+				if (error != null)
+				{
 					Log.e("AndroidDrawing", error.toString());
 					throw error.toException();
 				}
@@ -472,7 +496,8 @@ public class DrawingView extends View
 			@Override
 			public void onComplete(FirebaseError error, Firebase firebase)
 			{
-				if (error != null) {
+				if (error != null)
+				{
 					Log.e("AndroidDrawing", error.toString());
 					throw error.toException();
 				}
@@ -568,5 +593,10 @@ public class DrawingView extends View
 	public void setEnabled(boolean enabled)
 	{
 		mEnabled = enabled;
+	}
+
+	public boolean isEmpty()
+	{
+		return mExtendedPaths.size() == 0;
 	}
 }

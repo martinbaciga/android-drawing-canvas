@@ -26,10 +26,12 @@ import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
+import co.martinbaciga.drawingtest.ui.manager.LayerManager;
 import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class MainActivity extends AppCompatActivity
 {
+	@Bind(R.id.main_manipulate_iv) ImageView mManipulateImageView;
 	@Bind(R.id.container) FrameLayout mContainer;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
 	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity
 
 	private static final int MAX_STROKE_WIDTH = 10;
 
+	private LayerManager mLayerManager;
+
 	//private ValueEventListener mConnectedListener;
 
 	@Override
@@ -50,6 +54,8 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 
 		ButterKnife.bind(this);
+
+		mLayerManager = new LayerManager(this, mContainer, mDrawingView);
 
 		/*mDrawingView.setEnabled(false);
 
@@ -61,9 +67,6 @@ public class MainActivity extends AppCompatActivity
 		mContainer.addView(drawingView);
 		drawingView.setBackgroundColor(Color.TRANSPARENT);
 		drawingView.setEnabled(true);*/
-
-
-		initDrawingView();
 	}
 
 	@Override
@@ -126,11 +129,6 @@ public class MainActivity extends AppCompatActivity
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void initDrawingView()
-	{
-		//mDrawingView.setEnabled(true);
-	}
-
 	private void startFillBackgroundDialog()
 	{
 		int[] colors = getResources().getIntArray(R.array.palette);
@@ -164,9 +162,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onTextSetted(String text)
 			{
-				ManipulableTextView tv_sticker = new ManipulableTextView(MainActivity.this);
-				tv_sticker.setText(text);
-				mContainer.addView(tv_sticker);
+				mLayerManager.addTextComponent(text);
 			}
 		});
 
@@ -253,6 +249,12 @@ public class MainActivity extends AppCompatActivity
 				}
 			}
 		}
+	}
+
+	@OnClick(R.id.main_manipulate_iv)
+	public void onManipulateOptionClick()
+	{
+		mLayerManager.changeManipulateState();
 	}
 
 	@OnClick(R.id.main_fill_iv)

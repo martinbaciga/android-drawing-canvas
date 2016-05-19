@@ -8,19 +8,34 @@
     tools:context=".ui.activity.MainActivity"
     android:background="@android:color/darker_gray">
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.85"
-        android:layout_gravity="center">
+        android:gravity="center">
 
-        <co.martinbaciga.drawingtest.ui.component.DrawingView
-            android:id="@+id/main_drawing_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
-    </FrameLayout>
+            <co.martinbaciga.drawingtest.ui.component.DrawingView
+                android:id="@+id/main_drawing_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/main_manipulate_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_crop_free_black_36dp"
+            android:padding="10dp"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
