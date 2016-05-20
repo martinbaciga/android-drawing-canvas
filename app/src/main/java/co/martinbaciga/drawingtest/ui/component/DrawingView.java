@@ -354,7 +354,7 @@ public class DrawingView extends View
 		mLastX = (int) touchX / PIXEL_SIZE;
 		mLastY = (int) touchY / PIXEL_SIZE;
 
-		mCurrentSegment = new Segment(mPaintColor, mStrokeWidth);
+		mCurrentSegment = new Segment(Segment.TYPE_LINE, mPaintColor, mStrokeWidth);
 		mCurrentSegment.addPoint(mLastX, mLastY);
 	}
 
@@ -391,7 +391,7 @@ public class DrawingView extends View
 	private String saveSegment()
 	{
 		// scaled version of the segment, so that it matches the size of the board
-		Segment segment = new Segment(mCurrentSegment.getColor(), mCurrentSegment.getStrokeWidth());
+		Segment segment = new Segment(Segment.TYPE_LINE, mCurrentSegment.getColor(), mCurrentSegment.getStrokeWidth());
 		for (Point point : mCurrentSegment.getPoints())
 		{
 			segment.addPoint(point.getX() / mScale, point.getY() / mScale);
@@ -421,7 +421,7 @@ public class DrawingView extends View
 
 	private String saveSegment(ExtendedPath extendedPath)
 	{
-		Segment segment = new Segment(extendedPath.getPaint().getColor(), (int) extendedPath.getPaint().getStrokeWidth());
+		Segment segment = new Segment(Segment.TYPE_LINE, extendedPath.getPaint().getColor(), (int) extendedPath.getPaint().getStrokeWidth());
 		for (Point point : extendedPath.getPoints())
 		{
 			segment.addPoint(point.getX() / mScale, point.getY() / mScale);

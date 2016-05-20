@@ -8,11 +8,17 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
@@ -21,8 +27,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
+import co.martinbaciga.drawingtest.domain.model.Segment;
+import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
@@ -46,8 +55,6 @@ public class MainActivity extends AppCompatActivity
 
 	private static final int MAX_STROKE_WIDTH = 10;
 
-	private LayerManager mLayerManager;
-
 	//private ValueEventListener mConnectedListener;
 
 	@Override
@@ -58,18 +65,52 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		mLayerManager = new LayerManager(this, mContainer, mDrawingView);
+		mDrawingView.setEnabled(false);
 
-		/*mDrawingView.setEnabled(false);
+		Firebase ref = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
 
-		ManipulableImageView iv_sticker = new ManipulableImageView(MainActivity.this);
-		iv_sticker.setImageDrawable(getResources().getDrawable(R.drawable.messi));
-		mContainer.addView(iv_sticker);
+		ref.addChildEventListener(new ChildEventListener()
+		{
+			@Override
+			public void onChildAdded(DataSnapshot dataSnapshot, String s)
+			{
+				Segment segment = dataSnapshot.getValue(Segment.class);
 
-		DrawingView drawingView = new DrawingView(this, true);
-		mContainer.addView(drawingView);
-		drawingView.setBackgroundColor(Color.TRANSPARENT);
-		drawingView.setEnabled(true);*/
+				ManipulableTextView tv = new ManipulableTextView(MainActivity.this);
+				tv.setText(segment.getText());
+				tv.setControlItemsHidden(true);
+				mContainer.addView(tv);
+
+				tv.setX(segment.getX());
+				tv.setY(segment.getY());
+			}
+
+			@Override
+			public void onChildChanged(DataSnapshot dataSnapshot, String s)
+			{
+
+			}
+
+			@Override
+			public void onChildRemoved(DataSnapshot dataSnapshot)
+			{
+
+			}
+
+			@Override
+			public void onChildMoved(DataSnapshot dataSnapshot, String s)
+			{
+
+			}
+
+			@Override
+			public void onCancelled(FirebaseError firebaseError)
+			{
+
+			}
+		});
 	}
 
 	@Override
@@ -165,7 +206,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onTextSetted(String text)
 			{
-				mLayerManager.addTextComponent(text);
+
 			}
 		});
 
@@ -254,23 +295,53 @@ public class MainActivity extends AppCompatActivity
 		}
 	}
 
+	private void addText()
+	{
+		ManipulableTextView tv = new ManipulableTextView(this);
+		tv.setText("holaaaaaa");
+		tv.setControlItemsHidden(true);
+		mContainer.addView(tv);
+
+		Firebase ref = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
+
+		Firebase segmentRef = ref.push();
+
+		tv.measure(0, 0);
+		int[] pos = new int[2];
+		tv.getLocationOnScreen(pos);
+		Segment segment = new Segment(Segment.TYPE_TEXT, pos[0], pos[1], tv.getMeasuredWidth(), tv.getMeasuredHeight(), tv.getText());
+
+		segmentRef.setValue(segment, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
+					throw error.toException();
+				}
+			}
+		});
+	}
+
 	@OnClick(R.id.main_manipulate_iv)
 	public void onManipulateOptionClick()
 	{
-		mLayerManager.changeManipulateState();
+
 	}
 
 	@OnClick(R.id.main_text_iv)
 	public void onTextOptionClick()
 	{
-		startTextDialog();
+		addText();
 	}
 
 	@OnClick(R.id.main_image_iv)
 	public void onImageOptionClick()
 	{
-		Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
-		mLayerManager.addImageComponent(image);
+
 	}
 
 	@OnClick(R.id.main_fill_iv)
