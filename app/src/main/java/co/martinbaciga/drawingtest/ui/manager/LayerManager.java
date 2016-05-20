@@ -15,6 +15,8 @@ import co.martinbaciga.drawingtest.ui.component.ManipulableView;
 
 public class LayerManager
 {
+	private CanvasSyncManager mCanvasSyncManager;
+
 	private Context mContext;
 	private FrameLayout mRoot;
 	private DrawingView mBaseDrawingView;
@@ -27,6 +29,8 @@ public class LayerManager
 
 	public LayerManager(Context context, FrameLayout root, DrawingView baseDrawingView)
 	{
+		mCanvasSyncManager = new CanvasSyncManager();
+
 		mContext = context;
 		mRoot = root;
 		mBaseDrawingView = baseDrawingView;
