@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,6 +23,9 @@ import com.firebase.client.FirebaseError;
 
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity
 
 	//private ValueEventListener mConnectedListener;
 
+	private Set<String> mOutstandingSegments = new HashSet<>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -76,15 +82,18 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onChildAdded(DataSnapshot dataSnapshot, String s)
 			{
-				Segment segment = dataSnapshot.getValue(Segment.class);
+				if (!mOutstandingSegments.contains(dataSnapshot.getKey()))
+				{
+					Segment segment = dataSnapshot.getValue(Segment.class);
 
-				ManipulableTextView tv = new ManipulableTextView(MainActivity.this);
-				tv.setText(segment.getText());
-				tv.setControlItemsHidden(true);
-				mContainer.addView(tv);
+					ManipulableTextView tv = new ManipulableTextView(MainActivity.this);
+					tv.setText(segment.getText());
+					tv.setControlItemsHidden(true);
+					mContainer.addView(tv);
 
-				tv.setX(segment.getX());
-				tv.setY(segment.getY());
+					tv.setLeft((int) segment.getX());
+					tv.setRight((int) segment.getY());
+				}
 			}
 
 			@Override
@@ -308,10 +317,13 @@ public class MainActivity extends AppCompatActivity
 
 		Firebase segmentRef = ref.push();
 
-		tv.measure(0, 0);
+		tv.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 		int[] pos = new int[2];
 		tv.getLocationOnScreen(pos);
 		Segment segment = new Segment(Segment.TYPE_TEXT, pos[0], pos[1], tv.getMeasuredWidth(), tv.getMeasuredHeight(), tv.getText());
+
+		final String segmentId = segmentRef.getKey();
+		mOutstandingSegments.add(segmentId);
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
 		{
@@ -322,6 +334,7 @@ public class MainActivity extends AppCompatActivity
 				{
 					throw error.toException();
 				}
+				mOutstandingSegments.remove(segmentId);
 			}
 		});
 	}
