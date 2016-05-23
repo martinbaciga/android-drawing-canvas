@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
+
 public class ManipulableTextView extends ManipulableView
 {
 	private AutoResizeTextView mText;
@@ -17,8 +19,8 @@ public class ManipulableTextView extends ManipulableView
 	private static final int TEXT_GRAVITY = Gravity.LEFT;
 	private static final float TEXT_SIZE = 50;
 
-	public ManipulableTextView(Context context) {
-		super(context);
+	public ManipulableTextView(Context context, ManipulableViewEventListener listener) {
+		super(context, listener);
 	}
 
 	public ManipulableTextView(Context context, AttributeSet attrs) {
@@ -44,13 +46,6 @@ public class ManipulableTextView extends ManipulableView
 		mText.setMinTextSize(TEXT_SIZE);
 		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		mText.setSingleLine(false);
-
-		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT
-		);
-		params.gravity = Gravity.CENTER;
-		mText.setLayoutParams(params);
 
 		return mText;
 	}

@@ -8,14 +8,16 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
+import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
+
 public class ManipulableImageView extends ManipulableView
 {
 	private String mOwnerId;
 	private ImageView mImageView;
 
-	public ManipulableImageView(Context context)
+	public ManipulableImageView(Context context, ManipulableViewEventListener listener)
 	{
-		super(context);
+		super(context, listener);
 	}
 
 	public ManipulableImageView(Context context, AttributeSet attrs)

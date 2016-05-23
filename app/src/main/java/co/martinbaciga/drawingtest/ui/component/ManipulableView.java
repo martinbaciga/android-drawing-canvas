@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 import co.martinbaciga.drawingtest.ui.util.SystemUtils;
 
 public abstract class ManipulableView extends FrameLayout
@@ -21,6 +22,8 @@ public abstract class ManipulableView extends FrameLayout
 	private ImageView mScaleImageView; private static final String SCALE_IV_TAG = "ScaleImageView";
 	private ImageView mDeleteImageView; private static final String DELETE_IV_TAG = "DeleteImageView";
 	private ImageView mFlipImageView; private static final String FLIP_IV_TAG = "FlipImageView";
+
+	private String mSegmentId;
 
 	private int mMargin;
 	private int mSize;
@@ -44,11 +47,14 @@ public abstract class ManipulableView extends FrameLayout
 	private boolean mRotationEnabled = false;
 	private boolean mControlsHidden = false;
 
-	GestureDetector mGestureDetector;
+	private GestureDetector mGestureDetector;
 
-	public ManipulableView(Context context)
+	private ManipulableViewEventListener mEventListener;
+
+	public ManipulableView(Context context, ManipulableViewEventListener listener)
 	{
 		super(context);
+		mEventListener = listener;
 		init(context);
 	}
 
@@ -87,7 +93,6 @@ public abstract class ManipulableView extends FrameLayout
 						mSize,
 						mSize
 				);
-		this_params.gravity = Gravity.CENTER;
 
 		LayoutParams iv_main_params =
 				new LayoutParams(
@@ -229,7 +234,7 @@ public abstract class ManipulableView extends FrameLayout
 				mMoveOrgY = event.getRawY();
 				break;
 			case MotionEvent.ACTION_UP:
-				// ...
+				mEventListener.onDragFinished(this);
 				break;
 		}
 	}
@@ -402,5 +407,15 @@ public abstract class ManipulableView extends FrameLayout
 	public boolean isFlipped()
 	{
 		return getMainView().getRotationY() == -180f;
+	}
+
+	public String getSegmentId()
+	{
+		return mSegmentId;
+	}
+
+	public void setSegmentId(String mSegmentId)
+	{
+		this.mSegmentId = mSegmentId;
 	}
 }

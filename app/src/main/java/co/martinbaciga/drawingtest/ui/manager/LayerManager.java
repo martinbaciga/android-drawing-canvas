@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -12,11 +13,10 @@ import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableView;
+import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 
 public class LayerManager
 {
-	private CanvasSyncManager mCanvasSyncManager;
-
 	private Context mContext;
 	private FrameLayout mRoot;
 	private DrawingView mBaseDrawingView;
@@ -29,42 +29,46 @@ public class LayerManager
 
 	public LayerManager(Context context, FrameLayout root, DrawingView baseDrawingView)
 	{
-		mCanvasSyncManager = new CanvasSyncManager();
-
 		mContext = context;
 		mRoot = root;
 		mBaseDrawingView = baseDrawingView;
+		mBaseDrawingView.setEnabled(false);
 
 		mDrawingViews.add(mBaseDrawingView);
 		mLayers.add(mBaseDrawingView);
 	}
 
-	public void addTextComponent(String text)
+	public ManipulableTextView addTextComponent(String text, int x, int y, ManipulableViewEventListener listener, String segmentId)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
 			removeTopLayer();
 		}
 
-		ManipulableTextView tv = new ManipulableTextView(mContext);
+		ManipulableTextView tv = new ManipulableTextView(mContext, listener);
 		tv.setText(text);
 		tv.setControlItemsHidden(true);
+		tv.setX(x);
+		tv.setY(y);
+		tv.setSegmentId(segmentId);
 		mRoot.addView(tv);
 
 		mManipulableViews.add(tv);
 		mLayers.add(tv);
 
-		addDrawingLayer();
+		//addDrawingLayer();
+
+		return tv;
 	}
 
-	public void addImageComponent(Bitmap bitmap)
+	public void addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
 			removeTopLayer();
 		}
 
-		ManipulableImageView iv = new ManipulableImageView(mContext);
+		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
 		iv.setImageBitmap(bitmap);
 		iv.setControlItemsHidden(true);
 		mRoot.addView(iv);
@@ -72,7 +76,7 @@ public class LayerManager
 		mManipulableViews.add(iv);
 		mLayers.add(iv);
 
-		addDrawingLayer();
+		//addDrawingLayer();
 	}
 
 	public void addDrawingLayer()

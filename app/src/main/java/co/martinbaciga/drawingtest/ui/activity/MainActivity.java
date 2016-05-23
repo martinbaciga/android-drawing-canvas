@@ -28,6 +28,7 @@ import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
+import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
 import co.martinbaciga.drawingtest.ui.manager.LayerManager;
 import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
 	private static final int MAX_STROKE_WIDTH = 10;
 
-	private LayerManager mLayerManager;
+	private CanvasManager mCanvasManager;
 
 	//private ValueEventListener mConnectedListener;
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		mLayerManager = new LayerManager(this, mContainer, mDrawingView);
+		mCanvasManager = new CanvasManager(this, mContainer, mDrawingView);
 
 		/*mDrawingView.setEnabled(false);
 
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onTextSetted(String text)
 			{
-				mLayerManager.addTextComponent(text);
+				mCanvasManager.addTextComponent(text);
 			}
 		});
 
@@ -257,7 +258,7 @@ public class MainActivity extends AppCompatActivity
 	@OnClick(R.id.main_manipulate_iv)
 	public void onManipulateOptionClick()
 	{
-		mLayerManager.changeManipulateState();
+		mCanvasManager.changeManipulateState();
 	}
 
 	@OnClick(R.id.main_text_iv)
@@ -270,7 +271,7 @@ public class MainActivity extends AppCompatActivity
 	public void onImageOptionClick()
 	{
 		Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
-		mLayerManager.addImageComponent(image);
+		mCanvasManager.addImageComponent(image);
 	}
 
 	@OnClick(R.id.main_fill_iv)
