@@ -219,43 +219,49 @@ public abstract class ManipulableView extends FrameLayout
 
 	private void manageViewMotionEvents(MotionEvent event)
 	{
-		switch (event.getAction())
+		if (!mControlsHidden)
 		{
-			case MotionEvent.ACTION_DOWN:
-				mMoveOrgX = event.getRawX();
-				mMoveOrgY = event.getRawY();
-				break;
-			case MotionEvent.ACTION_MOVE:
-				float offsetX = event.getRawX() - mMoveOrgX;
-				float offsetY = event.getRawY() - mMoveOrgY;
-				ManipulableView.this.setX(ManipulableView.this.getX() + offsetX);
-				ManipulableView.this.setY(ManipulableView.this.getY() + offsetY);
-				mMoveOrgX = event.getRawX();
-				mMoveOrgY = event.getRawY();
-				break;
-			case MotionEvent.ACTION_UP:
-				mEventListener.onDragFinished(this);
-				break;
+			switch (event.getAction())
+			{
+				case MotionEvent.ACTION_DOWN:
+					mMoveOrgX = event.getRawX();
+					mMoveOrgY = event.getRawY();
+					break;
+				case MotionEvent.ACTION_MOVE:
+					float offsetX = event.getRawX() - mMoveOrgX;
+					float offsetY = event.getRawY() - mMoveOrgY;
+					ManipulableView.this.setX(ManipulableView.this.getX() + offsetX);
+					ManipulableView.this.setY(ManipulableView.this.getY() + offsetY);
+					mMoveOrgX = event.getRawX();
+					mMoveOrgY = event.getRawY();
+					break;
+				case MotionEvent.ACTION_UP:
+					mEventListener.onDragFinished(this);
+					break;
+			}
 		}
 	}
 
 	private void manageScaleMotionEvents(MotionEvent event)
 	{
-		switch (event.getAction())
+		if (!mControlsHidden)
 		{
-			case MotionEvent.ACTION_DOWN:
-				manageMovement(event);
-				break;
-			case MotionEvent.ACTION_MOVE:
-				manageScale(event);
-				manageRotation(event);
+			switch (event.getAction())
+			{
+				case MotionEvent.ACTION_DOWN:
+					manageMovement(event);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					manageScale(event);
+					manageRotation(event);
 
-				postInvalidate();
-				requestLayout();
-				break;
-			case MotionEvent.ACTION_UP:
-				// ...
-				break;
+					postInvalidate();
+					requestLayout();
+					break;
+				case MotionEvent.ACTION_UP:
+					// ...
+					break;
+			}
 		}
 	}
 
