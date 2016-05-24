@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
@@ -38,7 +39,7 @@ public class LayerManager
 		mLayers.add(mBaseDrawingView);
 	}
 
-	public ManipulableTextView addTextComponent(String text, int x, int y, ManipulableViewEventListener listener, String segmentId)
+	public ManipulableTextView addTextComponent(String text, float x, float y, ManipulableViewEventListener listener, String segmentId)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
@@ -59,6 +60,18 @@ public class LayerManager
 		//addDrawingLayer();
 
 		return tv;
+	}
+
+	public void updateTextComponentPosition(String segmentId, float x, float y)
+	{
+		for (ManipulableView mv : mManipulableViews)
+		{
+			if (mv.getSegmentId().matches(segmentId))
+			{
+				mv.setX(x);
+				mv.setY(y);
+			}
+		}
 	}
 
 	public void addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)

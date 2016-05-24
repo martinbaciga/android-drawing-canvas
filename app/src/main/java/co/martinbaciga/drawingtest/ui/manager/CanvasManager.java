@@ -11,7 +11,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
@@ -25,6 +27,7 @@ import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 public class CanvasManager
 {
 	private LayerManager mLayerManager;
+	private DrawingView mBaseDrawingView;
 
 	private Firebase mSegmentsRef;
 
@@ -33,6 +36,7 @@ public class CanvasManager
 	public CanvasManager(Context context, FrameLayout root, DrawingView baseDrawingView)
 	{
 		mLayerManager = new LayerManager(context, root, baseDrawingView);
+		mBaseDrawingView = baseDrawingView;
 
 		initRefs();
 		initCallbacks();
@@ -46,7 +50,7 @@ public class CanvasManager
 
 		ManipulableTextView tv = mLayerManager.addTextComponent(text, 200, 200, mEventLister, segmentId);
 
-		Segment segment = new Segment(Segment.TYPE_TEXT, tv.getX(), tv.getY(), tv.getMeasuredWidth(), tv.getMeasuredHeight(), tv.getText());
+		Segment segment = new Segment(Segment.TYPE_TEXT, tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(), tv.getMeasuredWidth(), tv.getMeasuredHeight(), tv.getText());
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
 		{
@@ -91,14 +95,20 @@ public class CanvasManager
 
 				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
 				{
-					mLayerManager.addTextComponent(segment.getText(), (int) segment.getX(), (int) segment.getY(), mEventLister, segmentId);
+					mLayerManager.addTextComponent(segment.getText(), segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(), mEventLister, segmentId);
 				}
 			}
 
 			@Override
 			public void onChildChanged(DataSnapshot dataSnapshot, String s)
 			{
+				String segmentId = dataSnapshot.getKey();
+				Segment segment = dataSnapshot.getValue(Segment.class);
 
+				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
+				{
+					mLayerManager.updateTextComponentPosition(segmentId, segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale());
+				}
 			}
 
 			@Override
@@ -126,8 +136,25 @@ public class CanvasManager
 		@Override
 		public void onDragFinished(ManipulableView v)
 		{
-			mSegmentsRef.child(v.getSegmentId()).child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X).setValue(v.getX());
-			mSegmentsRef.child(v.getSegmentId()).child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y).setValue(v.getY());
+			final String segmentId = v.getSegmentId();
+			mOutstandingSegments.add(segmentId);
+
+			Map<String, Object> segment = new HashMap<>();
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX()/mBaseDrawingView.getScale()));
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY()/mBaseDrawingView.getScale()));
+
+			mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+			{
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebase)
+				{
+					if (error != null)
+					{
+						throw error.toException();
+					}
+					mOutstandingSegments.remove(segmentId);
+				}
+			});
 		}
 	};
 }

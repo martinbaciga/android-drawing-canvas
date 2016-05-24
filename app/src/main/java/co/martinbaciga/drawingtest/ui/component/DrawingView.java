@@ -599,4 +599,9 @@ public class DrawingView extends View
 	{
 		return mExtendedPaths.size() == 0;
 	}
+
+	public float getScale()
+	{
+		return mScale;
+	}
 }
