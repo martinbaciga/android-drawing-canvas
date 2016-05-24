@@ -115,7 +115,10 @@ public class CanvasManager
 
 				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
 				{
-					mLayerManager.updateTextComponentPosition(segmentId, segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale());
+					mLayerManager.updateTextComponent(segmentId,
+							segment.getText(),
+							segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(),
+							segment.getTextSize()*mBaseDrawingView.getScale());
 				}
 			}
 

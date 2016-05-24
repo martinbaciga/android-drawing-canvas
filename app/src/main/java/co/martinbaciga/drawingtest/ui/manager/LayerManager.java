@@ -63,14 +63,17 @@ public class LayerManager
 		return tv;
 	}
 
-	public void updateTextComponentPosition(String segmentId, float x, float y)
+	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize)
 	{
 		for (ManipulableView mv : mManipulableViews)
 		{
 			if (mv.getSegmentId().matches(segmentId))
 			{
-				mv.setX(x);
-				mv.setY(y);
+				ManipulableTextView mtv = (ManipulableTextView) mv;
+				mtv.setText(text);
+				mtv.setX(x);
+				mtv.setY(y);
+				mtv.setTextSize(textSize);
 			}
 		}
 	}

@@ -81,13 +81,6 @@ public class ManipulableTextView extends ManipulableView
 		mText.setShadowLayer(radius, dx, dy, color);
 	}
 
-	public void setTextSize(float size)
-	{
-		mText.setTextSize(size);
-		mText.setMinTextSize(size);
-		mTextSize = size;
-	}
-
 	public void setTextColor(int color)
 	{
 		mText.setTextColor(color);
@@ -102,5 +95,12 @@ public class ManipulableTextView extends ManipulableView
 	public float getTextSize()
 	{
 		return mTextSize;
+	}
+
+	public void setTextSize(float size)
+	{
+		mText.setTextSize(size);
+		mText.setMinTextSize(size);
+		mTextSize = size;
 	}
 }
