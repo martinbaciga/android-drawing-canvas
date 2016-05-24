@@ -151,6 +151,11 @@ public class LayerManager
 		mDrawingViews.get(mDrawingViews.size()-1).setEnabled(false);
 	}
 
+	public View getRoot()
+	{
+		return mRoot;
+	}
+
 	public void enableTopDrawingView()
 	{
 		mDrawingViews.get(mDrawingViews.size()-1).setEnabled(true);

@@ -229,8 +229,7 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this))
 		{
-			//Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
-			Uri uri = FileManager.saveBitmap(UiUtils.getBitmapFromView(mContainer));
+			Uri uri = FileManager.saveBitmap(mCanvasManager.getCanvasBitmap());
 			startShareDialog(uri);
 		}
 	}

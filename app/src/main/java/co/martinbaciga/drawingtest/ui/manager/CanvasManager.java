@@ -23,6 +23,7 @@ import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableView;
 import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
+import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class CanvasManager
 {
@@ -79,6 +80,11 @@ public class CanvasManager
 	public void changeManipulateState()
 	{
 		mLayerManager.changeManipulateState();
+	}
+
+	public Bitmap getCanvasBitmap()
+	{
+		return UiUtils.getBitmapFromView(mLayerManager.getRoot());
 	}
 
 	private void initRefs()
