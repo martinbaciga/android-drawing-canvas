@@ -26,6 +26,8 @@ import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 
 public class CanvasManager
 {
+	private static final float TEXT_SIZE = 5;
+
 	private LayerManager mLayerManager;
 	private DrawingView mBaseDrawingView;
 
@@ -48,9 +50,12 @@ public class CanvasManager
 		final String segmentId = segmentRef.getKey();
 		mOutstandingSegments.add(segmentId);
 
-		ManipulableTextView tv = mLayerManager.addTextComponent(text, 200, 200, mEventLister, segmentId);
+		ManipulableTextView tv = mLayerManager.addTextComponent(text, TEXT_SIZE*mBaseDrawingView.getScale(), 200, 200, mEventLister, segmentId);
 
-		Segment segment = new Segment(Segment.TYPE_TEXT, tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(), tv.getMeasuredWidth(), tv.getMeasuredHeight(), tv.getText());
+		Segment segment = new Segment(Segment.TYPE_TEXT,
+				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
+				tv.getMeasuredWidth(), tv.getMeasuredHeight(),
+				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale());
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
 		{
@@ -95,7 +100,10 @@ public class CanvasManager
 
 				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
 				{
-					mLayerManager.addTextComponent(segment.getText(), segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(), mEventLister, segmentId);
+					mLayerManager.addTextComponent(segment.getText(),
+							segment.getTextSize()*mBaseDrawingView.getScale(),
+							segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(),
+							mEventLister, segmentId);
 				}
 			}
 

@@ -39,7 +39,7 @@ public class LayerManager
 		mLayers.add(mBaseDrawingView);
 	}
 
-	public ManipulableTextView addTextComponent(String text, float x, float y, ManipulableViewEventListener listener, String segmentId)
+	public ManipulableTextView addTextComponent(String text, float textSize, float x, float y, ManipulableViewEventListener listener, String segmentId)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
@@ -48,6 +48,7 @@ public class LayerManager
 
 		ManipulableTextView tv = new ManipulableTextView(mContext, listener);
 		tv.setText(text);
+		tv.setTextSize(textSize);
 		tv.setControlItemsHidden(true);
 		tv.setX(x);
 		tv.setY(y);

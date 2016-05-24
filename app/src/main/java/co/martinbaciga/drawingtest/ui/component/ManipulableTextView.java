@@ -14,6 +14,7 @@ import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 public class ManipulableTextView extends ManipulableView
 {
 	private AutoResizeTextView mText;
+	private float mTextSize;
 
 	private static final int TEXT_COLOR = Color.BLACK;
 	private static final int TEXT_GRAVITY = Gravity.LEFT;
@@ -38,6 +39,8 @@ public class ManipulableTextView extends ManipulableView
 		{
 			return mText;
 		}
+
+		mTextSize = TEXT_SIZE;
 
 		mText = new AutoResizeTextView(getContext());
 		mText.setTextColor(TEXT_COLOR);
@@ -82,6 +85,7 @@ public class ManipulableTextView extends ManipulableView
 	{
 		mText.setTextSize(size);
 		mText.setMinTextSize(size);
+		mTextSize = size;
 	}
 
 	public void setTextColor(int color)
@@ -93,5 +97,10 @@ public class ManipulableTextView extends ManipulableView
 	{
 		float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
 		return px/scaledDensity;
+	}
+
+	public float getTextSize()
+	{
+		return mTextSize;
 	}
 }

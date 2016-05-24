@@ -22,6 +22,7 @@ public class Segment
 	private float width;
 	private float height;
 	private String text;
+	private float textSize;
 
     // Required default constructor for Firebase serialization / deserialization
     @SuppressWarnings("unused")
@@ -34,7 +35,7 @@ public class Segment
 		this.strokeWidth = strokeWidth;
     }
 
-	public Segment(String type, float x, float y, float width, float height, String text)
+	public Segment(String type, float x, float y, float width, float height, String text, float textSize)
 	{
 		this.type = type;
 		this.x = x;
@@ -42,6 +43,7 @@ public class Segment
 		this.width = width;
 		this.height = height;
 		this.text = text;
+		this.textSize = textSize;
 	}
 
 	public Segment(String type, List<Point> points, int color, int strokeWidth)
@@ -133,5 +135,15 @@ public class Segment
 	public void setX(float x)
 	{
 		this.x = x;
+	}
+
+	public float getTextSize()
+	{
+		return textSize;
+	}
+
+	public void setTextSize(float textSize)
+	{
+		this.textSize = textSize;
 	}
 }
