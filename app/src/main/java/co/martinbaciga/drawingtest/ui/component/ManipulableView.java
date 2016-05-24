@@ -267,11 +267,12 @@ public abstract class ManipulableView extends FrameLayout
 
 	private void delete()
 	{
-		if (ManipulableView.this.getParent() != null)
+		/*if (ManipulableView.this.getParent() != null)
 		{
 			ViewGroup myCanvas = ((ViewGroup) ManipulableView.this.getParent());
 			myCanvas.removeView(ManipulableView.this);
-		}
+		}*/
+		mEventListener.onDeleteClick(this);
 	}
 
 	private void flip()

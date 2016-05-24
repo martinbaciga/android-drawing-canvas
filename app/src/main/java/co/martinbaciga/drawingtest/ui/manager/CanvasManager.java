@@ -125,7 +125,13 @@ public class CanvasManager
 			@Override
 			public void onChildRemoved(DataSnapshot dataSnapshot)
 			{
+				String segmentId = dataSnapshot.getKey();
+				Segment segment = dataSnapshot.getValue(Segment.class);
 
+				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
+				{
+					mLayerManager.removeTextComponent(segmentId);
+				}
 			}
 
 			@Override
@@ -155,6 +161,28 @@ public class CanvasManager
 			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY()/mBaseDrawingView.getScale()));
 
 			mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+			{
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebase)
+				{
+					if (error != null)
+					{
+						throw error.toException();
+					}
+					mOutstandingSegments.remove(segmentId);
+				}
+			});
+		}
+
+		@Override
+		public void onDeleteClick(ManipulableView v)
+		{
+			final String segmentId = v.getSegmentId();
+			mOutstandingSegments.add(segmentId);
+
+			mLayerManager.removeTextComponent(segmentId);
+
+			mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
 			{
 				@Override
 				public void onComplete(FirebaseError error, Firebase firebase)

@@ -78,6 +78,19 @@ public class LayerManager
 		}
 	}
 
+	public void removeTextComponent(String segmentId)
+	{
+		for (int i = 0; i < mManipulableViews.size(); i++)
+		{
+			if (mManipulableViews.get(i).getSegmentId().matches(segmentId))
+			{
+				mRoot.removeView(mManipulableViews.get(i));
+				mLayers.remove(mManipulableViews.get(i));
+				mManipulableViews.remove(i);
+			}
+		}
+	}
+
 	public void addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
