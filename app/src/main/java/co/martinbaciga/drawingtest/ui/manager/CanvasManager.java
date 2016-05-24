@@ -153,47 +153,53 @@ public class CanvasManager
 		@Override
 		public void onDragFinished(ManipulableView v)
 		{
-			final String segmentId = v.getSegmentId();
-			mOutstandingSegments.add(segmentId);
-
-			Map<String, Object> segment = new HashMap<>();
-			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX()/mBaseDrawingView.getScale()));
-			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY()/mBaseDrawingView.getScale()));
-
-			mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+			if (v.getClass() == ManipulableTextView.class)
 			{
-				@Override
-				public void onComplete(FirebaseError error, Firebase firebase)
+				final String segmentId = v.getSegmentId();
+				mOutstandingSegments.add(segmentId);
+
+				Map<String, Object> segment = new HashMap<>();
+				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX() / mBaseDrawingView.getScale()));
+				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY() / mBaseDrawingView.getScale()));
+
+				mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
 				{
-					if (error != null)
+					@Override
+					public void onComplete(FirebaseError error, Firebase firebase)
 					{
-						throw error.toException();
+						if (error != null)
+						{
+							throw error.toException();
+						}
+						mOutstandingSegments.remove(segmentId);
 					}
-					mOutstandingSegments.remove(segmentId);
-				}
-			});
+				});
+			}
 		}
 
 		@Override
 		public void onDeleteClick(ManipulableView v)
 		{
-			final String segmentId = v.getSegmentId();
-			mOutstandingSegments.add(segmentId);
-
-			mLayerManager.removeTextComponent(segmentId);
-
-			mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
+			if (v.getClass() == ManipulableTextView.class)
 			{
-				@Override
-				public void onComplete(FirebaseError error, Firebase firebase)
+				final String segmentId = v.getSegmentId();
+				mOutstandingSegments.add(segmentId);
+
+				mLayerManager.removeTextComponent(segmentId);
+
+				mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
 				{
-					if (error != null)
+					@Override
+					public void onComplete(FirebaseError error, Firebase firebase)
 					{
-						throw error.toException();
+						if (error != null)
+						{
+							throw error.toException();
+						}
+						mOutstandingSegments.remove(segmentId);
 					}
-					mOutstandingSegments.remove(segmentId);
-				}
-			});
+				});
+			}
 		}
 	};
 }

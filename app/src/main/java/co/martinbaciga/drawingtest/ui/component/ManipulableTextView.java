@@ -2,12 +2,11 @@ package co.martinbaciga.drawingtest.ui.component;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 
@@ -49,6 +48,9 @@ public class ManipulableTextView extends ManipulableView
 		mText.setMinTextSize(TEXT_SIZE);
 		mText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		mText.setSingleLine(false);
+
+		/*ypeface font = Typeface.createFromAsset(mText.getContext().getAssets(), "fonts/Disney.ttf");
+		mText.setTypeface(font);*/
 
 		return mText;
 	}

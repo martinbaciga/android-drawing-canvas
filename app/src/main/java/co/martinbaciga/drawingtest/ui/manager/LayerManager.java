@@ -33,7 +33,7 @@ public class LayerManager
 		mContext = context;
 		mRoot = root;
 		mBaseDrawingView = baseDrawingView;
-		mBaseDrawingView.setEnabled(false);
+		mBaseDrawingView.setEnabled(true);
 
 		mDrawingViews.add(mBaseDrawingView);
 		mLayers.add(mBaseDrawingView);
