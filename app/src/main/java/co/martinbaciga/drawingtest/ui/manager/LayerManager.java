@@ -63,6 +63,31 @@ public class LayerManager
 		return tv;
 	}
 
+	public ManipulableTextView addTextComponent(String text, float textSize, float x, float y, int width, int height, ManipulableViewEventListener listener, String segmentId)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableTextView tv = new ManipulableTextView(mContext, listener);
+		tv.setText(text);
+		tv.setTextSize(textSize);
+		tv.setControlItemsHidden(true);
+		tv.setX(x);
+		tv.setY(y);
+		tv.setSize(width, height);
+		tv.setSegmentId(segmentId);
+		mRoot.addView(tv);
+
+		mManipulableViews.add(tv);
+		mLayers.add(tv);
+
+		//addDrawingLayer();
+
+		return tv;
+	}
+
 	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int width, int height)
 	{
 		for (ManipulableView mv : mManipulableViews)

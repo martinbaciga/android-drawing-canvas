@@ -111,6 +111,8 @@ public class CanvasManager
 						mLayerManager.addTextComponent(segment.getText(),
 								segment.getTextSize() * mBaseDrawingView.getScale(),
 								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
+								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
+								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								mEventLister, segmentId);
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
