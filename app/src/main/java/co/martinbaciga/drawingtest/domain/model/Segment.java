@@ -59,24 +59,6 @@ public class Segment
         points.add(p);
     }
 
-    public List<Point> getPoints() {
-        return points;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-	public int getStrokeWidth()
-	{
-		return strokeWidth;
-	}
-
-	public void setStrokeWidth(int mStrokeWidth)
-	{
-		this.strokeWidth = mStrokeWidth;
-	}
-
 	public String getType()
 	{
 		return type;
@@ -87,34 +69,44 @@ public class Segment
 		this.type = type;
 	}
 
-	public String getText()
+	public List<Point> getPoints()
 	{
-		return text;
+		return points;
 	}
 
-	public void setText(String text)
+	public void setPoints(List<Point> points)
 	{
-		this.text = text;
+		this.points = points;
 	}
 
-	public float getHeight()
+	public int getColor()
 	{
-		return height;
+		return color;
 	}
 
-	public void setHeight(float height)
+	public void setColor(int color)
 	{
-		this.height = height;
+		this.color = color;
 	}
 
-	public float getWidth()
+	public int getStrokeWidth()
 	{
-		return width;
+		return strokeWidth;
 	}
 
-	public void setWidth(float width)
+	public void setStrokeWidth(int strokeWidth)
 	{
-		this.width = width;
+		this.strokeWidth = strokeWidth;
+	}
+
+	public float getX()
+	{
+		return x;
+	}
+
+	public void setX(float x)
+	{
+		this.x = x;
 	}
 
 	public float getY()
@@ -127,14 +119,34 @@ public class Segment
 		this.y = y;
 	}
 
-	public float getX()
+	public float getWidth()
 	{
-		return x;
+		return width;
 	}
 
-	public void setX(float x)
+	public void setWidth(float width)
 	{
-		this.x = x;
+		this.width = width;
+	}
+
+	public float getHeight()
+	{
+		return height;
+	}
+
+	public void setHeight(float height)
+	{
+		this.height = height;
+	}
+
+	public String getText()
+	{
+		return text;
+	}
+
+	public void setText(String text)
+	{
+		this.text = text;
 	}
 
 	public float getTextSize()

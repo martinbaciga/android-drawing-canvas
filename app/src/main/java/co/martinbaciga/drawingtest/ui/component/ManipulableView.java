@@ -259,7 +259,7 @@ public abstract class ManipulableView extends FrameLayout
 					requestLayout();
 					break;
 				case MotionEvent.ACTION_UP:
-					// ...
+					mEventListener.onScaleFinished(this);
 					break;
 			}
 		}
@@ -424,5 +424,15 @@ public abstract class ManipulableView extends FrameLayout
 	public void setSegmentId(String mSegmentId)
 	{
 		this.mSegmentId = mSegmentId;
+	}
+
+	public void setSize(int width, int height)
+	{
+		mSize = width;
+		ManipulableView.this.getLayoutParams().width = width;
+		ManipulableView.this.getLayoutParams().height = height;
+
+		postInvalidate();
+		requestLayout();
 	}
 }

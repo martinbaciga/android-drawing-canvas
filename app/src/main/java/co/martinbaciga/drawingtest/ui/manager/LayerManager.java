@@ -63,7 +63,7 @@ public class LayerManager
 		return tv;
 	}
 
-	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize)
+	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int width, int height)
 	{
 		for (ManipulableView mv : mManipulableViews)
 		{
@@ -74,6 +74,7 @@ public class LayerManager
 				mtv.setX(x);
 				mtv.setY(y);
 				mtv.setTextSize(textSize);
+				mtv.setSize(width, height);
 			}
 		}
 	}

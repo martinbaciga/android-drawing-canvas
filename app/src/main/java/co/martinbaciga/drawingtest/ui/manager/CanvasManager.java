@@ -55,7 +55,7 @@ public class CanvasManager
 
 		Segment segment = new Segment(Segment.TYPE_TEXT,
 				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
-				tv.getMeasuredWidth(), tv.getMeasuredHeight(),
+				tv.getWidth(), tv.getHeight(),
 				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale());
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
@@ -106,10 +106,16 @@ public class CanvasManager
 
 				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
 				{
-					mLayerManager.addTextComponent(segment.getText(),
-							segment.getTextSize()*mBaseDrawingView.getScale(),
-							segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(),
-							mEventLister, segmentId);
+					if (segment.getType().matches(Segment.TYPE_TEXT))
+					{
+						mLayerManager.addTextComponent(segment.getText(),
+								segment.getTextSize() * mBaseDrawingView.getScale(),
+								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
+								mEventLister, segmentId);
+					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
+					{
+
+					}
 				}
 			}
 
@@ -119,12 +125,20 @@ public class CanvasManager
 				String segmentId = dataSnapshot.getKey();
 				Segment segment = dataSnapshot.getValue(Segment.class);
 
-				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
+				if (!mOutstandingSegments.contains(segmentId))
 				{
-					mLayerManager.updateTextComponent(segmentId,
-							segment.getText(),
-							segment.getX()*mBaseDrawingView.getScale(), segment.getY()*mBaseDrawingView.getScale(),
-							segment.getTextSize()*mBaseDrawingView.getScale());
+					if (segment.getType().matches(Segment.TYPE_TEXT))
+					{
+						mLayerManager.updateTextComponent(segmentId,
+								segment.getText(),
+								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
+								segment.getTextSize() * mBaseDrawingView.getScale(),
+								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
+								(int)(segment.getHeight() * mBaseDrawingView.getScale()));
+					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
+					{
+
+					}
 				}
 			}
 
@@ -134,9 +148,15 @@ public class CanvasManager
 				String segmentId = dataSnapshot.getKey();
 				Segment segment = dataSnapshot.getValue(Segment.class);
 
-				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
+				if (!mOutstandingSegments.contains(segmentId))
 				{
-					mLayerManager.removeTextComponent(segmentId);
+					if (segment.getType().matches(Segment.TYPE_TEXT))
+					{
+						mLayerManager.removeTextComponent(segmentId);
+					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
+					{
+
+					}
 				}
 			}
 
@@ -167,6 +187,33 @@ public class CanvasManager
 				Map<String, Object> segment = new HashMap<>();
 				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX() / mBaseDrawingView.getScale()));
 				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY() / mBaseDrawingView.getScale()));
+
+				mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+				{
+					@Override
+					public void onComplete(FirebaseError error, Firebase firebase)
+					{
+						if (error != null)
+						{
+							throw error.toException();
+						}
+						mOutstandingSegments.remove(segmentId);
+					}
+				});
+			}
+		}
+
+		@Override
+		public void onScaleFinished(ManipulableView v)
+		{
+			if (v.getClass() == ManipulableTextView.class)
+			{
+				final String segmentId = v.getSegmentId();
+				mOutstandingSegments.add(segmentId);
+
+				Map<String, Object> segment = new HashMap<>();
+				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_WIDTH, String.valueOf(v.getWidth() / mBaseDrawingView.getScale()));
+				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_HEIGHT, String.valueOf(v.getHeight() / mBaseDrawingView.getScale()));
 
 				mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
 				{

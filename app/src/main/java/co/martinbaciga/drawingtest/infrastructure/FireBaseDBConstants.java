@@ -9,4 +9,6 @@ public class FireBaseDBConstants
 	public static final String FIREBASE_DB_SEGMENTS = "segments";
 	public static final String FIREBASE_DB_SEGMENTS_X = "x";
 	public static final String FIREBASE_DB_SEGMENTS_Y = "y";
+	public static final String FIREBASE_DB_SEGMENTS_WIDTH = "width";
+	public static final String FIREBASE_DB_SEGMENTS_HEIGHT = "height";
 }
