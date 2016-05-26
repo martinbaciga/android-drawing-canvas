@@ -269,8 +269,9 @@ public class MainActivity extends AppCompatActivity
 	@OnClick(R.id.main_image_iv)
 	public void onImageOptionClick()
 	{
-		Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
-		mCanvasManager.addImageComponent(image);
+		/*Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
+		mCanvasManager.addImageComponent(image);*/
+		mCanvasManager.addImageComponent("http://www.biografiasyvidas.com/biografia/m/fotos/menem.jpg");
 	}
 
 	@OnClick(R.id.main_fill_iv)

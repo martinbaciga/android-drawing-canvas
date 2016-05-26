@@ -8,6 +8,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 
 public class ManipulableImageView extends ManipulableView
@@ -69,6 +71,11 @@ public class ManipulableImageView extends ManipulableView
 	public Bitmap getImageBitmap()
 	{
 		return ((BitmapDrawable) this.mImageView.getDrawable()).getBitmap();
+	}
+
+	public void setImageUrl(Context context, String url)
+	{
+		Glide.with(context).load(url).into(mImageView);
 	}
 
 }

@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 import co.martinbaciga.drawingtest.domain.model.Segment;
@@ -117,7 +119,7 @@ public class LayerManager
 		}
 	}
 
-	public void addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)
+	public ManipulableImageView addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
@@ -133,6 +135,27 @@ public class LayerManager
 		mLayers.add(iv);
 
 		//addDrawingLayer();
+
+		return iv;
+	}
+
+	public ManipulableImageView addImageComponent(String url, ManipulableViewEventListener listener)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
+		iv.setImageUrl(mContext, url);
+		iv.setControlItemsHidden(true);
+		mRoot.addView(iv);
+
+		mManipulableViews.add(iv);
+		mLayers.add(iv);
+
+		//addDrawingLayer();
+		return iv;
 	}
 
 	public void addDrawingLayer()

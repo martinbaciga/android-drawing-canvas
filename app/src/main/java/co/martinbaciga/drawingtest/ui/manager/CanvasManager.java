@@ -20,6 +20,7 @@ import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
+import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableView;
 import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
@@ -74,7 +75,35 @@ public class CanvasManager
 
 	public void addImageComponent(Bitmap bitmap)
 	{
+
 		mLayerManager.addImageComponent(bitmap, mEventLister);
+	}
+
+	public void addImageComponent(String url)
+	{
+		Firebase segmentRef = mSegmentsRef.push();
+		final String segmentId = segmentRef.getKey();
+		mOutstandingSegments.add(segmentId);
+
+		ManipulableImageView iv = mLayerManager.addImageComponent(url, mEventLister);
+
+		Segment segment = new Segment(Segment.TYPE_IMAGE,
+				iv.getX()/mBaseDrawingView.getScale(), iv.getY()/mBaseDrawingView.getScale(),
+				iv.getWidth(), iv.getHeight(),
+				url);
+
+		segmentRef.setValue(segment, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
+					throw error.toException();
+				}
+				mOutstandingSegments.remove(segmentId);
+			}
+		});
 	}
 
 	public void changeManipulateState()
@@ -104,7 +133,7 @@ public class CanvasManager
 				String segmentId = dataSnapshot.getKey();
 				Segment segment = dataSnapshot.getValue(Segment.class);
 
-				if (!mOutstandingSegments.contains(segmentId) && segment.getType().matches(Segment.TYPE_TEXT))
+				if (!mOutstandingSegments.contains(segmentId))
 				{
 					if (segment.getType().matches(Segment.TYPE_TEXT))
 					{
@@ -116,7 +145,8 @@ public class CanvasManager
 								mEventLister, segmentId);
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
-
+						mLayerManager.addImageComponent(segment.getUrl(),
+								mEventLister);
 					}
 				}
 			}

@@ -24,6 +24,9 @@ public class Segment
 	private String text;
 	private float textSize;
 
+	// Image
+	private String url;
+
     // Required default constructor for Firebase serialization / deserialization
     @SuppressWarnings("unused")
     private Segment() {
@@ -44,6 +47,16 @@ public class Segment
 		this.height = height;
 		this.text = text;
 		this.textSize = textSize;
+	}
+
+	public Segment(String type, float x, float y, float width, float height, String url)
+	{
+		this.type = type;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.url = url;
 	}
 
 	public Segment(String type, List<Point> points, int color, int strokeWidth)
@@ -157,5 +170,15 @@ public class Segment
 	public void setTextSize(float textSize)
 	{
 		this.textSize = textSize;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
 	}
 }
