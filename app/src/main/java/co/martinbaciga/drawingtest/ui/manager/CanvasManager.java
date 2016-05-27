@@ -56,7 +56,7 @@ public class CanvasManager
 
 		Segment segment = new Segment(Segment.TYPE_TEXT,
 				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
-				tv.getWidth(), tv.getHeight(),
+				tv.getLayoutParams().width/mBaseDrawingView.getScale(), tv.getLayoutParams().height/mBaseDrawingView.getScale(),
 				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale());
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
@@ -89,7 +89,7 @@ public class CanvasManager
 
 		Segment segment = new Segment(Segment.TYPE_IMAGE,
 				iv.getX()/mBaseDrawingView.getScale(), iv.getY()/mBaseDrawingView.getScale(),
-				iv.getWidth(), iv.getHeight(),
+				iv.getLayoutParams().width/mBaseDrawingView.getScale(), iv.getLayoutParams().height/mBaseDrawingView.getScale(),
 				url);
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
