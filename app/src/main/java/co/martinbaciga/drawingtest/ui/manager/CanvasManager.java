@@ -75,7 +75,6 @@ public class CanvasManager
 
 	public void addImageComponent(Bitmap bitmap)
 	{
-
 		//mLayerManager.addImageComponent(bitmap, mEventLister);
 	}
 

@@ -194,17 +194,22 @@ public abstract class ManipulableView extends FrameLayout
 		@Override
 		public boolean onTouch(View view, MotionEvent event)
 		{
-			if (view.getTag().equals(TAG))
+			if (!mControlsHidden)
 			{
-				manageViewMotionEvents(event);
-			} else if (view.getTag().equals(SCALE_IV_TAG))
-			{
-				manageScaleMotionEvents(event);
+				if (view.getTag().equals(TAG))
+				{
+					manageViewMotionEvents(event);
+				} else if (view.getTag().equals(SCALE_IV_TAG))
+				{
+					manageScaleMotionEvents(event);
+				}
+
+				mGestureDetector.onTouchEvent(event);
+
+				return true;
 			}
-
-			mGestureDetector.onTouchEvent(event);
-
-			return true;
+			
+			return false;
 		}
 	};
 
