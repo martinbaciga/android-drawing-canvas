@@ -208,7 +208,7 @@ public abstract class ManipulableView extends FrameLayout
 
 				return true;
 			}
-			
+
 			return false;
 		}
 	};

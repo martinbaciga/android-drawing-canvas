@@ -26,6 +26,7 @@ import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
+import co.martinbaciga.drawingtest.ui.dialog.ColorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
@@ -175,26 +176,18 @@ public class MainActivity extends AppCompatActivity
 
 	private void startColorPickerDialog()
 	{
-		int[] colors = getResources().getIntArray(R.array.palette);
+		ColorDialog dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
 
-		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
-				colors,
-				mDrawingView.getPaintColor(),
-				5,
-				ColorPickerDialog.SIZE_SMALL);
-
-		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener()
+		dialog.setOnColorSelectedListener(new ColorDialog.OnColorSelectedListener()
 		{
-
 			@Override
 			public void onColorSelected(int color)
 			{
 				mDrawingView.setPaintColor(color);
 			}
-
 		});
 
-		dialog.show(getFragmentManager(), "ColorPickerDialog");
+		dialog.show(getSupportFragmentManager(), "ColorDialog");
 	}
 
 	private void startStrokeSelectorDialog()
