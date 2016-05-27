@@ -76,7 +76,7 @@ public class CanvasManager
 	public void addImageComponent(Bitmap bitmap)
 	{
 
-		mLayerManager.addImageComponent(bitmap, mEventLister);
+		//mLayerManager.addImageComponent(bitmap, mEventLister);
 	}
 
 	public void addImageComponent(String url)
@@ -85,7 +85,7 @@ public class CanvasManager
 		final String segmentId = segmentRef.getKey();
 		mOutstandingSegments.add(segmentId);
 
-		ManipulableImageView iv = mLayerManager.addImageComponent(url, mEventLister);
+		ManipulableImageView iv = mLayerManager.addImageComponent(url, mEventLister, segmentId);
 
 		Segment segment = new Segment(Segment.TYPE_IMAGE,
 				iv.getX()/mBaseDrawingView.getScale(), iv.getY()/mBaseDrawingView.getScale(),
@@ -146,7 +146,7 @@ public class CanvasManager
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
 						mLayerManager.addImageComponent(segment.getUrl(),
-								mEventLister);
+								mEventLister, segmentId);
 					}
 				}
 			}
@@ -169,7 +169,11 @@ public class CanvasManager
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()));
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
-
+						mLayerManager.updateImageComponent(segmentId,
+								segment.getX() * mBaseDrawingView.getScale(),
+								segment.getY() * mBaseDrawingView.getScale(),
+								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
+								(int)(segment.getHeight() * mBaseDrawingView.getScale()));
 					}
 				}
 			}
@@ -182,13 +186,7 @@ public class CanvasManager
 
 				if (!mOutstandingSegments.contains(segmentId))
 				{
-					if (segment.getType().matches(Segment.TYPE_TEXT))
-					{
-						mLayerManager.removeTextComponent(segmentId);
-					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
-					{
-
-					}
+					mLayerManager.removeManipulableView(segmentId);
 				}
 			}
 
@@ -211,80 +209,71 @@ public class CanvasManager
 		@Override
 		public void onDragFinished(ManipulableView v)
 		{
-			if (v.getClass() == ManipulableTextView.class)
+			final String segmentId = v.getSegmentId();
+			mOutstandingSegments.add(segmentId);
+
+			Map<String, Object> segment = new HashMap<>();
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX() / mBaseDrawingView.getScale()));
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY() / mBaseDrawingView.getScale()));
+
+			mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
 			{
-				final String segmentId = v.getSegmentId();
-				mOutstandingSegments.add(segmentId);
-
-				Map<String, Object> segment = new HashMap<>();
-				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_X, String.valueOf(v.getX() / mBaseDrawingView.getScale()));
-				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_Y, String.valueOf(v.getY() / mBaseDrawingView.getScale()));
-
-				mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebase)
 				{
-					@Override
-					public void onComplete(FirebaseError error, Firebase firebase)
+					if (error != null)
 					{
-						if (error != null)
-						{
-							throw error.toException();
-						}
-						mOutstandingSegments.remove(segmentId);
+						throw error.toException();
 					}
-				});
-			}
+					mOutstandingSegments.remove(segmentId);
+				}
+			});
 		}
 
 		@Override
 		public void onScaleFinished(ManipulableView v)
 		{
-			if (v.getClass() == ManipulableTextView.class)
+			final String segmentId = v.getSegmentId();
+			mOutstandingSegments.add(segmentId);
+
+			Map<String, Object> segment = new HashMap<>();
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_WIDTH, String.valueOf(v.getWidth() / mBaseDrawingView.getScale()));
+			segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_HEIGHT, String.valueOf(v.getHeight() / mBaseDrawingView.getScale()));
+
+			mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
 			{
-				final String segmentId = v.getSegmentId();
-				mOutstandingSegments.add(segmentId);
-
-				Map<String, Object> segment = new HashMap<>();
-				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_WIDTH, String.valueOf(v.getWidth() / mBaseDrawingView.getScale()));
-				segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_HEIGHT, String.valueOf(v.getHeight() / mBaseDrawingView.getScale()));
-
-				mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebase)
 				{
-					@Override
-					public void onComplete(FirebaseError error, Firebase firebase)
+					if (error != null)
 					{
-						if (error != null)
-						{
-							throw error.toException();
-						}
-						mOutstandingSegments.remove(segmentId);
+						throw error.toException();
 					}
-				});
-			}
+					mOutstandingSegments.remove(segmentId);
+				}
+			});
 		}
 
 		@Override
 		public void onDeleteClick(ManipulableView v)
 		{
-			if (v.getClass() == ManipulableTextView.class)
+			final String segmentId = v.getSegmentId();
+			mOutstandingSegments.add(segmentId);
+
+			mLayerManager.removeManipulableView(segmentId);
+
+			mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
 			{
-				final String segmentId = v.getSegmentId();
-				mOutstandingSegments.add(segmentId);
-
-				mLayerManager.removeTextComponent(segmentId);
-
-				mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
+				@Override
+				public void onComplete(FirebaseError error, Firebase firebase)
 				{
-					@Override
-					public void onComplete(FirebaseError error, Firebase firebase)
+					if (error != null)
 					{
-						if (error != null)
-						{
-							throw error.toException();
-						}
-						mOutstandingSegments.remove(segmentId);
+						throw error.toException();
 					}
-				});
-			}
+					mOutstandingSegments.remove(segmentId);
+				}
+			});
 		}
 	};
 }

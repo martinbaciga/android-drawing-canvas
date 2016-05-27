@@ -106,7 +106,62 @@ public class LayerManager
 		}
 	}
 
-	public void removeTextComponent(String segmentId)
+	public ManipulableImageView addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener, String segmentId)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
+		iv.setImageBitmap(bitmap);
+		iv.setControlItemsHidden(true);
+		iv.setSegmentId(segmentId);
+		mRoot.addView(iv);
+
+		mManipulableViews.add(iv);
+		mLayers.add(iv);
+
+		//addDrawingLayer();
+
+		return iv;
+	}
+
+	public ManipulableImageView addImageComponent(String url, ManipulableViewEventListener listener, String segmentId)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
+		iv.setImageUrl(mContext, url);
+		iv.setControlItemsHidden(true);
+		iv.setSegmentId(segmentId);
+		mRoot.addView(iv);
+
+		mManipulableViews.add(iv);
+		mLayers.add(iv);
+
+		//addDrawingLayer();
+		return iv;
+	}
+
+	public void updateImageComponent(String segmentId, float x, float y, int width, int height)
+	{
+		for (ManipulableView mv : mManipulableViews)
+		{
+			if (mv.getSegmentId().matches(segmentId))
+			{
+				ManipulableImageView miv = (ManipulableImageView) mv;
+				miv.setX(x);
+				miv.setY(y);
+				miv.setSize(width, height);
+			}
+		}
+	}
+
+	public void removeManipulableView(String segmentId)
 	{
 		for (int i = 0; i < mManipulableViews.size(); i++)
 		{
@@ -117,45 +172,6 @@ public class LayerManager
 				mManipulableViews.remove(i);
 			}
 		}
-	}
-
-	public ManipulableImageView addImageComponent(Bitmap bitmap, ManipulableViewEventListener listener)
-	{
-		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
-		{
-			removeTopLayer();
-		}
-
-		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
-		iv.setImageBitmap(bitmap);
-		iv.setControlItemsHidden(true);
-		mRoot.addView(iv);
-
-		mManipulableViews.add(iv);
-		mLayers.add(iv);
-
-		//addDrawingLayer();
-
-		return iv;
-	}
-
-	public ManipulableImageView addImageComponent(String url, ManipulableViewEventListener listener)
-	{
-		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
-		{
-			removeTopLayer();
-		}
-
-		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
-		iv.setImageUrl(mContext, url);
-		iv.setControlItemsHidden(true);
-		mRoot.addView(iv);
-
-		mManipulableViews.add(iv);
-		mLayers.add(iv);
-
-		//addDrawingLayer();
-		return iv;
 	}
 
 	public void addDrawingLayer()
