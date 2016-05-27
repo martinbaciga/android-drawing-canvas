@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity
 	{
 		/*Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.messi);
 		mCanvasManager.addImageComponent(image);*/
-		mCanvasManager.addImageComponent("http://www.biografiasyvidas.com/biografia/m/fotos/menem.jpg");
+		mCanvasManager.addImageComponent("http://vignette2.wikia.nocookie.net/simpsons/images/d/df/Maggie-Simpson-icon.png/revision/latest?cb=20140817104831");
 	}
 
 	@OnClick(R.id.main_fill_iv)

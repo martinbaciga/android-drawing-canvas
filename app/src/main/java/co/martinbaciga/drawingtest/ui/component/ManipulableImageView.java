@@ -48,7 +48,7 @@ public class ManipulableImageView extends ManipulableView
 		if (this.mImageView == null)
 		{
 			this.mImageView = new ImageView(getContext());
-			this.mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+			this.mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 		}
 		return mImageView;
 	}

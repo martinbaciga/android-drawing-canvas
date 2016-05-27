@@ -145,6 +145,9 @@ public class CanvasManager
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
 						mLayerManager.addImageComponent(segment.getUrl(),
+								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
+								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
+								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								mEventLister, segmentId);
 					}
 				}

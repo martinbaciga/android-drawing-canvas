@@ -3,6 +3,7 @@ package co.martinbaciga.drawingtest.ui.manager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -136,6 +137,29 @@ public class LayerManager
 
 		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
 		iv.setImageUrl(mContext, url);
+		iv.setControlItemsHidden(true);
+		iv.setSegmentId(segmentId);
+		mRoot.addView(iv);
+
+		mManipulableViews.add(iv);
+		mLayers.add(iv);
+
+		//addDrawingLayer();
+		return iv;
+	}
+
+	public ManipulableImageView addImageComponent(String url, float x, float y, int width, int height, ManipulableViewEventListener listener, String segmentId)
+	{
+		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
+		{
+			removeTopLayer();
+		}
+
+		ManipulableImageView iv = new ManipulableImageView(mContext, listener);
+		iv.setImageUrl(mContext, url);
+		iv.setX(x);
+		iv.setY(y);
+		iv.setSize(width, height);
 		iv.setControlItemsHidden(true);
 		iv.setSegmentId(segmentId);
 		mRoot.addView(iv);
