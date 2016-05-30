@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -64,7 +65,7 @@ public class LayerManager
 		return tv;
 	}
 
-	public ManipulableTextView addTextComponent(String text, float textSize, float x, float y, int width, int height, ManipulableViewEventListener listener, String segmentId)
+	public ManipulableTextView addTextComponent(String text, float textSize, float x, float y, int width, int height, String alignment, ManipulableViewEventListener listener, String segmentId)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
@@ -79,6 +80,18 @@ public class LayerManager
 		tv.setY(y);
 		tv.setSize(width, height);
 		tv.setSegmentId(segmentId);
+
+		if (alignment.matches(Segment.TEXT_ALIGN_LEFT))
+		{
+			tv.setTextGravity(Gravity.LEFT);
+		} else if (alignment.matches(Segment.TEXT_ALIGN_CENTER))
+		{
+			tv.setTextGravity(Gravity.CENTER_HORIZONTAL);
+		} else if (alignment.matches(Segment.TEXT_ALIGN_RIGHT))
+		{
+			tv.setTextGravity(Gravity.RIGHT);
+		}
+
 		mRoot.addView(tv);
 
 		mManipulableViews.add(tv);
@@ -89,7 +102,7 @@ public class LayerManager
 		return tv;
 	}
 
-	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int width, int height)
+	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int width, int height, String alignment)
 	{
 		for (ManipulableView mv : mManipulableViews)
 		{
@@ -101,6 +114,17 @@ public class LayerManager
 				mtv.setY(y);
 				mtv.setTextSize(textSize);
 				mtv.setSize(width, height);
+
+				if (alignment.matches(Segment.TEXT_ALIGN_LEFT))
+				{
+					mtv.setTextGravity(Gravity.LEFT);
+				} else if (alignment.matches(Segment.TEXT_ALIGN_CENTER))
+				{
+					mtv.setTextGravity(Gravity.CENTER_HORIZONTAL);
+				} else if (alignment.matches(Segment.TEXT_ALIGN_RIGHT))
+				{
+					mtv.setTextGravity(Gravity.RIGHT);
+				}
 			}
 		}
 	}

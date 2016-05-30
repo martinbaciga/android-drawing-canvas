@@ -65,7 +65,8 @@ public class CanvasManager
 		Segment segment = new Segment(Segment.TYPE_TEXT,
 				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
 				tv.getLayoutParams().width/mBaseDrawingView.getScale(), tv.getLayoutParams().height/mBaseDrawingView.getScale(),
-				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale());
+				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale(),
+				Segment.TEXT_ALIGN_LEFT);
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
 		{
@@ -113,10 +114,29 @@ public class CanvasManager
 		});
 	}
 
-	public void changeTextAlign(int gravity)
+	public void changeTextAlign(int gravity, String sGravity)
 	{
 		ManipulableTextView mtv = (ManipulableTextView) mLayerManager.getManipulableView(mManipulableViewEnabledId);
 		mtv.setTextGravity(gravity);
+
+		final String segmentId = mtv.getSegmentId();
+		mOutstandingSegments.add(segmentId);
+
+		Map<String, Object> segment = new HashMap<>();
+		segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_ALIGNMENT, String.valueOf(sGravity));
+
+		mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebase)
+			{
+				if (error != null)
+				{
+					throw error.toException();
+				}
+				mOutstandingSegments.remove(segmentId);
+			}
+		});
 	}
 
 	public void changeManipulateState()
@@ -179,6 +199,7 @@ public class CanvasManager
 								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
+								segment.getAlignment(),
 								mEventLister, segmentId);
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
@@ -206,7 +227,8 @@ public class CanvasManager
 								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
 								segment.getTextSize() * mBaseDrawingView.getScale(),
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
-								(int)(segment.getHeight() * mBaseDrawingView.getScale()));
+								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
+								segment.getAlignment());
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
 						mLayerManager.updateImageComponent(segmentId,

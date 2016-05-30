@@ -9,6 +9,10 @@ public class Segment
 	public static final String TYPE_TEXT = "text";
 	public static final String TYPE_IMAGE = "image";
 
+	public static final String TEXT_ALIGN_LEFT = "left";
+	public static final String TEXT_ALIGN_CENTER = "center";
+	public static final String TEXT_ALIGN_RIGHT = "right";
+
 	private String type;
 
 	// Line
@@ -23,6 +27,7 @@ public class Segment
 	private float height;
 	private String text;
 	private float textSize;
+	private String alignment;
 
 	// Image
 	private String url;
@@ -38,7 +43,7 @@ public class Segment
 		this.strokeWidth = strokeWidth;
     }
 
-	public Segment(String type, float x, float y, float width, float height, String text, float textSize)
+	public Segment(String type, float x, float y, float width, float height, String text, float textSize, String alignment)
 	{
 		this.type = type;
 		this.x = x;
@@ -47,6 +52,7 @@ public class Segment
 		this.height = height;
 		this.text = text;
 		this.textSize = textSize;
+		this.alignment = alignment;
 	}
 
 	public Segment(String type, float x, float y, float width, float height, String url)
@@ -180,5 +186,15 @@ public class Segment
 	public void setUrl(String url)
 	{
 		this.url = url;
+	}
+
+	public String getAlignment()
+	{
+		return alignment;
+	}
+
+	public void setAlignment(String alignment)
+	{
+		this.alignment = alignment;
 	}
 }

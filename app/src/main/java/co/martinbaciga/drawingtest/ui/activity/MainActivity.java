@@ -24,6 +24,7 @@ import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
 import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
+import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
@@ -276,19 +277,19 @@ public class MainActivity extends AppCompatActivity
 	@OnClick(R.id.main_text_align_left_iv)
 	public void onTextAlignLeftClick()
 	{
-		mCanvasManager.changeTextAlign(Gravity.LEFT);
+		mCanvasManager.changeTextAlign(Gravity.LEFT, Segment.TEXT_ALIGN_LEFT);
 	}
 
 	@OnClick(R.id.main_text_align_center_iv)
 	public void onTextAlignCenterClick()
 	{
-		mCanvasManager.changeTextAlign(Gravity.CENTER_HORIZONTAL);
+		mCanvasManager.changeTextAlign(Gravity.CENTER_HORIZONTAL, Segment.TEXT_ALIGN_CENTER);
 	}
 
 	@OnClick(R.id.main_text_align_right_iv)
 	public void onTextAlignRightClick()
 	{
-		mCanvasManager.changeTextAlign(Gravity.RIGHT);
+		mCanvasManager.changeTextAlign(Gravity.RIGHT, Segment.TEXT_ALIGN_RIGHT);
 	}
 
 	@OnClick(R.id.main_image_iv)
