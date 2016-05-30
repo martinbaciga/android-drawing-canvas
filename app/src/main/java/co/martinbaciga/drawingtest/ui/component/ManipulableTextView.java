@@ -88,6 +88,11 @@ public class ManipulableTextView extends ManipulableView
 		mText.setTextColor(color);
 	}
 
+	public int getTextColor()
+	{
+		return mText.getCurrentTextColor();
+	}
+
 	public static float pixelsToSp(Context context, float px)
 	{
 		float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;

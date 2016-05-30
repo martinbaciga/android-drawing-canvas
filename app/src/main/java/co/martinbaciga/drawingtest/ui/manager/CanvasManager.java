@@ -70,6 +70,7 @@ public class CanvasManager
 				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
 				tv.getLayoutParams().width/mBaseDrawingView.getScale(), tv.getLayoutParams().height/mBaseDrawingView.getScale(),
 				tv.getText(), tv.getTextSize()/mBaseDrawingView.getScale(),
+				tv.getTextColor(),
 				Segment.TEXT_ALIGN_LEFT);
 
 		segmentRef.setValue(segment, new Firebase.CompletionListener()
@@ -123,6 +124,25 @@ public class CanvasManager
 	{
 		ManipulableTextView mtv = (ManipulableTextView) mLayerManager.getManipulableView(mManipulableViewEnabledId);
 		mtv.setTextColor(color);
+
+		final String segmentId = mtv.getSegmentId();
+		mOutstandingSegments.add(segmentId);
+
+		Map<String, Object> segment = new HashMap<>();
+		segment.put(FireBaseDBConstants.FIREBASE_DB_SEGMENTS_COLOR, String.valueOf(color));
+
+		mSegmentsRef.child(segmentId).updateChildren(segment, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebase)
+			{
+				if (error != null)
+				{
+					throw error.toException();
+				}
+				mOutstandingSegments.remove(segmentId);
+			}
+		});
 	}
 
 	public void changeTextAlign(int gravity, String sGravity)
@@ -207,6 +227,7 @@ public class CanvasManager
 					{
 						mLayerManager.addTextComponent(segment.getText(),
 								segment.getTextSize() * mBaseDrawingView.getScale(),
+								segment.getColor(),
 								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
@@ -239,6 +260,7 @@ public class CanvasManager
 								segment.getText(),
 								segment.getX() * mBaseDrawingView.getScale(), segment.getY() * mBaseDrawingView.getScale(),
 								segment.getTextSize() * mBaseDrawingView.getScale(),
+								segment.getColor(),
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								segment.getAlignment());

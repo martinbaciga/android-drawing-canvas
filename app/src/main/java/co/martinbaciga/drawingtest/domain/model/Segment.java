@@ -43,7 +43,7 @@ public class Segment
 		this.strokeWidth = strokeWidth;
     }
 
-	public Segment(String type, float x, float y, float width, float height, String text, float textSize, String alignment)
+	public Segment(String type, float x, float y, float width, float height, String text, float textSize, int textColor, String alignment)
 	{
 		this.type = type;
 		this.x = x;
@@ -52,6 +52,7 @@ public class Segment
 		this.height = height;
 		this.text = text;
 		this.textSize = textSize;
+		this.color = textColor;
 		this.alignment = alignment;
 	}
 

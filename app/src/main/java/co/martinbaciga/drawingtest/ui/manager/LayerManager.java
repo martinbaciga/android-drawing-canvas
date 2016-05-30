@@ -65,7 +65,7 @@ public class LayerManager
 		return tv;
 	}
 
-	public ManipulableTextView addTextComponent(String text, float textSize, float x, float y, int width, int height, String alignment, ManipulableViewEventListener listener, String segmentId)
+	public ManipulableTextView addTextComponent(String text, float textSize, int color, float x, float y, int width, int height, String alignment, ManipulableViewEventListener listener, String segmentId)
 	{
 		if (mLayers.size() > 1 && getTopLayer().getClass() == DrawingView.class && ((DrawingView)getTopLayer()).isEmpty())
 		{
@@ -75,6 +75,7 @@ public class LayerManager
 		ManipulableTextView tv = new ManipulableTextView(mContext, listener);
 		tv.setText(text);
 		tv.setTextSize(textSize);
+		tv.setTextColor(color);
 		tv.setControlItemsHidden(true);
 		tv.setX(x);
 		tv.setY(y);
@@ -102,7 +103,7 @@ public class LayerManager
 		return tv;
 	}
 
-	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int width, int height, String alignment)
+	public void updateTextComponent(String segmentId, String text, float x, float y, float textSize, int color, int width, int height, String alignment)
 	{
 		for (ManipulableView mv : mManipulableViews)
 		{
@@ -113,6 +114,7 @@ public class LayerManager
 				mtv.setX(x);
 				mtv.setY(y);
 				mtv.setTextSize(textSize);
+				mtv.setTextColor(color);
 				mtv.setSize(width, height);
 
 				if (alignment.matches(Segment.TEXT_ALIGN_LEFT))
