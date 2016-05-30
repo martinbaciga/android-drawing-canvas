@@ -29,6 +29,9 @@ import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class CanvasManager
 {	public static final String SHARED_PREFERENCES_KEY_MANIPULABLE_ENABLED = "SPManipulableEnabled";
+	public static final int TARGET_PAINT = 1;
+	public static final int TARGET_TEXT = 2;
+
 	private static final float TEXT_SIZE = 5;
 
 	private LayerManager mLayerManager;
@@ -61,6 +64,7 @@ public class CanvasManager
 		mOutstandingSegments.add(segmentId);
 
 		ManipulableTextView tv = mLayerManager.addTextComponent(text, TEXT_SIZE*mBaseDrawingView.getScale(), 200, 200, mEventLister, segmentId);
+		mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 
 		Segment segment = new Segment(Segment.TYPE_TEXT,
 				tv.getX()/mBaseDrawingView.getScale(), tv.getY()/mBaseDrawingView.getScale(),
@@ -94,6 +98,7 @@ public class CanvasManager
 		mOutstandingSegments.add(segmentId);
 
 		ManipulableImageView iv = mLayerManager.addImageComponent(url, mEventLister, segmentId);
+		mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 
 		Segment segment = new Segment(Segment.TYPE_IMAGE,
 				iv.getX()/mBaseDrawingView.getScale(), iv.getY()/mBaseDrawingView.getScale(),
@@ -112,6 +117,12 @@ public class CanvasManager
 				mOutstandingSegments.remove(segmentId);
 			}
 		});
+	}
+
+	public void changeTextColor(int color)
+	{
+		ManipulableTextView mtv = (ManipulableTextView) mLayerManager.getManipulableView(mManipulableViewEnabledId);
+		mtv.setTextColor(color);
 	}
 
 	public void changeTextAlign(int gravity, String sGravity)
@@ -209,6 +220,8 @@ public class CanvasManager
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								mEventLister, segmentId);
 					}
+
+					mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 				}
 			}
 
@@ -249,6 +262,7 @@ public class CanvasManager
 				if (!mOutstandingSegments.contains(segmentId))
 				{
 					mLayerManager.removeManipulableView(segmentId);
+					mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 				}
 			}
 
@@ -323,6 +337,7 @@ public class CanvasManager
 			mOutstandingSegments.add(segmentId);
 
 			mLayerManager.removeManipulableView(segmentId);
+			mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 
 			mSegmentsRef.child(segmentId).removeValue(new Firebase.CompletionListener()
 			{

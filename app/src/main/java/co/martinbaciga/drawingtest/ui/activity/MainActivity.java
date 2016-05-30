@@ -189,16 +189,34 @@ public class MainActivity extends AppCompatActivity
 		dialog.show(getSupportFragmentManager(), "TextDialog");
 	}
 
-	private void startColorPickerDialog()
+	private void startColorPickerDialog(final int target)
 	{
-		ColorDialog dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
+		ColorDialog dialog = null;
+
+		switch (target)
+		{
+			case CanvasManager.TARGET_PAINT:
+				dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
+				break;
+			case CanvasManager.TARGET_TEXT:
+				dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
+				break;
+		}
 
 		dialog.setOnColorSelectedListener(new ColorDialog.OnColorSelectedListener()
 		{
 			@Override
 			public void onColorSelected(int color)
 			{
-				mDrawingView.setPaintColor(color);
+				switch (target)
+				{
+					case CanvasManager.TARGET_PAINT:
+						mDrawingView.setPaintColor(color);
+						break;
+					case CanvasManager.TARGET_TEXT:
+						mCanvasManager.changeTextColor(color);
+						break;
+				}
 			}
 		});
 
@@ -268,6 +286,12 @@ public class MainActivity extends AppCompatActivity
 		mCanvasManager.changeManipulateState();
 	}
 
+	@OnClick(R.id.main_text_color_iv)
+	public void onTextColorOptionClick()
+	{
+		startColorPickerDialog(CanvasManager.TARGET_TEXT);
+	}
+
 	@OnClick(R.id.main_text_iv)
 	public void onTextOptionClick()
 	{
@@ -309,7 +333,7 @@ public class MainActivity extends AppCompatActivity
 	@OnClick(R.id.main_color_iv)
 	public void onColorOptionClick()
 	{
-		startColorPickerDialog();
+		startColorPickerDialog(CanvasManager.TARGET_PAINT);
 	}
 
 	@OnClick(R.id.main_stroke_iv)
