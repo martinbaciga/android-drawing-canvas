@@ -113,6 +113,12 @@ public class CanvasManager
 		});
 	}
 
+	public void changeTextAlign(int gravity)
+	{
+		ManipulableTextView mtv = (ManipulableTextView) mLayerManager.getManipulableView(mManipulableViewEnabledId);
+		mtv.setTextGravity(gravity);
+	}
+
 	public void changeManipulateState()
 	{
 		mManipulateEnabled = !mManipulateEnabled;

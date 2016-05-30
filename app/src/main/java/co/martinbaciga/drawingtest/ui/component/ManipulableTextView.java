@@ -105,4 +105,9 @@ public class ManipulableTextView extends ManipulableView
 		mText.setMinTextSize(size);
 		mTextSize = size;
 	}
+
+	public void setTextGravity(int gravity)
+	{
+		mText.setGravity(gravity);
+	}
 }

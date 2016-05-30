@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -270,6 +271,24 @@ public class MainActivity extends AppCompatActivity
 	public void onTextOptionClick()
 	{
 		startTextDialog();
+	}
+
+	@OnClick(R.id.main_text_align_left_iv)
+	public void onTextAlignLeftClick()
+	{
+		mCanvasManager.changeTextAlign(Gravity.LEFT);
+	}
+
+	@OnClick(R.id.main_text_align_center_iv)
+	public void onTextAlignCenterClick()
+	{
+		mCanvasManager.changeTextAlign(Gravity.CENTER_HORIZONTAL);
+	}
+
+	@OnClick(R.id.main_text_align_right_iv)
+	public void onTextAlignRightClick()
+	{
+		mCanvasManager.changeTextAlign(Gravity.RIGHT);
 	}
 
 	@OnClick(R.id.main_image_iv)
