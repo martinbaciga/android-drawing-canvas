@@ -19,6 +19,7 @@ import java.util.Set;
 import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
 import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
+import co.martinbaciga.drawingtest.infrastructure.manager.SharedPreferencesManager;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
 import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
@@ -27,20 +28,27 @@ import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
 import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class CanvasManager
-{
+{	public static final String SHARED_PREFERENCES_KEY_MANIPULABLE_ENABLED = "SPManipulableEnabled";
 	private static final float TEXT_SIZE = 5;
 
 	private LayerManager mLayerManager;
+	private CanvasMenuManager mCanvasMenuManager;
 	private DrawingView mBaseDrawingView;
+	private Context mContext;
 
 	private Firebase mSegmentsRef;
 
 	private Set<String> mOutstandingSegments = new HashSet<>();
 
-	public CanvasManager(Context context, FrameLayout root, DrawingView baseDrawingView)
+	private boolean mManipulateEnabled = false;
+	private String mManipulableViewEnabledId;
+
+	public CanvasManager(Context context, FrameLayout root, DrawingView baseDrawingView, CanvasMenuManager canvasMenuManager)
 	{
+		mCanvasMenuManager = canvasMenuManager;
 		mLayerManager = new LayerManager(context, root, baseDrawingView);
 		mBaseDrawingView = baseDrawingView;
+		mContext = context;
 
 		initRefs();
 		initCallbacks();
@@ -107,7 +115,31 @@ public class CanvasManager
 
 	public void changeManipulateState()
 	{
-		mLayerManager.changeManipulateState();
+		mManipulateEnabled = !mManipulateEnabled;
+		SharedPreferencesManager.save(mContext, SHARED_PREFERENCES_KEY_MANIPULABLE_ENABLED, mManipulateEnabled);
+
+		if (mManipulableViewEnabledId != null && !mManipulableViewEnabledId.matches(""))
+		{
+			mLayerManager.getManipulableView(mManipulableViewEnabledId).setControlItemsHidden(!mManipulateEnabled);
+		} else
+		{
+			mLayerManager.getTopManipulableView().setControlItemsHidden(!mManipulateEnabled);
+			mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
+		}
+
+		if (mManipulateEnabled)
+		{
+			mLayerManager.disableTopDrawingView();
+
+			if (mLayerManager.getManipulableView(mManipulableViewEnabledId).getClass() == ManipulableTextView.class)
+			{
+				mCanvasMenuManager.showTextOptions();
+			}
+		} else {
+			mLayerManager.enableTopDrawingView();
+
+			mCanvasMenuManager.showBaseOptions();
+		}
 	}
 
 	public Bitmap getCanvasBitmap()
@@ -276,6 +308,17 @@ public class CanvasManager
 					mOutstandingSegments.remove(segmentId);
 				}
 			});
+		}
+
+		@Override
+		public void onTap(ManipulableView v)
+		{
+			if (mManipulateEnabled && !mManipulableViewEnabledId.matches(v.getSegmentId()))
+			{
+				mLayerManager.getManipulableView(mManipulableViewEnabledId).setControlItemsHidden(true);
+				mLayerManager.getManipulableView(v.getSegmentId()).setControlItemsHidden(false);
+				mManipulableViewEnabledId = v.getSegmentId();
+			}
 		}
 	};
 }

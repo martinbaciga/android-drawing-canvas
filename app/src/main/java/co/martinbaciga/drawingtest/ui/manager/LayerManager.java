@@ -25,8 +25,6 @@ public class LayerManager
 	private FrameLayout mRoot;
 	private DrawingView mBaseDrawingView;
 
-	private boolean mManipulateEnabled = false;
-
 	private ArrayList<ManipulableView> mManipulableViews = new ArrayList<>();
 	private ArrayList<DrawingView> mDrawingViews = new ArrayList<>();
 	private ArrayList<View> mLayers = new ArrayList<>();
@@ -210,23 +208,6 @@ public class LayerManager
 		mLayers.add(drawingView);
 	}
 
-	public void changeManipulateState()
-	{
-		mManipulateEnabled = !mManipulateEnabled;
-
-		for (ManipulableView mv : mManipulableViews)
-		{
-			mv.setControlItemsHidden(!mManipulateEnabled);
-		}
-
-		if (mManipulateEnabled)
-		{
-			disableTopDrawingView();
-		} else {
-			enableTopDrawingView();
-		}
-	}
-
 	public void disableDrawingViews()
 	{
 		for (DrawingView dv : mDrawingViews)
@@ -243,6 +224,24 @@ public class LayerManager
 	public View getRoot()
 	{
 		return mRoot;
+	}
+
+	public ManipulableView getManipulableView(String segmentId)
+	{
+		for (ManipulableView mv : mManipulableViews)
+		{
+			if (mv.getSegmentId().matches(segmentId))
+			{
+				return mv;
+			}
+		}
+
+		return null;
+	}
+
+	public ManipulableView getTopManipulableView()
+	{
+		return mManipulableViews.get(mManipulableViews.size()-1);
 	}
 
 	public void enableTopDrawingView()

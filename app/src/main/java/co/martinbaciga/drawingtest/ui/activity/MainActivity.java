@@ -30,21 +30,29 @@ import co.martinbaciga.drawingtest.ui.dialog.ColorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
+import co.martinbaciga.drawingtest.ui.manager.CanvasMenuManager;
 import co.martinbaciga.drawingtest.ui.manager.LayerManager;
 import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class MainActivity extends AppCompatActivity
 {
-	@Bind(R.id.main_manipulate_iv) ImageView mManipulateImageView;
 	@Bind(R.id.container) FrameLayout mContainer;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
+
 	@Bind(R.id.main_text_iv) ImageView mTextImageView;
+	@Bind(R.id.main_text_font_iv) ImageView mTextFontImageView;
+	@Bind(R.id.main_text_color_iv) ImageView mTextColorImageView;
+	@Bind(R.id.main_text_align_left_iv) ImageView mTextAlignLeftImageView;
+	@Bind(R.id.main_text_align_center_iv) ImageView mTextAlignCenterImageView;
+	@Bind(R.id.main_text_align_right_iv) ImageView mTextAlignRightImageView;
+
+	@Bind(R.id.main_paint_iv) ImageView mPaintImageView;
 	@Bind(R.id.main_image_iv) ImageView mImageImageView;
 	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
 	@Bind(R.id.main_color_iv) ImageView mColorImageView;
 	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
+	@Bind(R.id.main_manipulate_iv) ImageView mManipulateImageView;
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
-	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
 
 	private static final int MAX_STROKE_WIDTH = 10;
 
@@ -60,7 +68,12 @@ public class MainActivity extends AppCompatActivity
 
 		ButterKnife.bind(this);
 
-		mCanvasManager = new CanvasManager(this, mContainer, mDrawingView);
+		CanvasMenuManager canvasMenuManager = new CanvasMenuManager(
+				mTextImageView, mTextFontImageView, mTextColorImageView, mTextAlignLeftImageView, mTextAlignCenterImageView, mTextAlignRightImageView,
+				mPaintImageView, mImageImageView, mFillBackgroundImageView, mColorImageView, mStrokeImageView, mManipulateImageView, mUndoImageView
+		);
+
+		mCanvasManager = new CanvasManager(this, mContainer, mDrawingView, canvasMenuManager);
 
 		/*mDrawingView.setEnabled(false);
 
@@ -289,11 +302,5 @@ public class MainActivity extends AppCompatActivity
 	public void onUndoOptionClick()
 	{
 		mDrawingView.undo();
-	}
-
-	@OnClick(R.id.main_redo_iv)
-	public void onRedoOptionClick()
-	{
-		mDrawingView.redo();
 	}
 }

@@ -27,14 +27,6 @@
 
         </FrameLayout>
 
-        <ImageView
-            android:id="@+id/main_manipulate_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_crop_free_black_36dp"
-            android:padding="10dp"
-            android:layout_alignParentBottom="true"/>
-
     </RelativeLayout>
 
     <LinearLayout
@@ -55,6 +47,65 @@
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
         <ImageView
+            android:id="@+id/main_paint_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_gesture_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
+            android:id="@+id/main_text_font_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_format_color_text_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/main_text_color_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_palette_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/main_text_align_left_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_format_align_left_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/main_text_align_center_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_format_align_center_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/main_text_align_right_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_format_align_right_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
             android:id="@+id/main_image_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +118,7 @@
             android:id="@+id/main_fill_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_format_color_fill_white_24dp"
+            android:src="@drawable/ic_texture_white_24dp"
             android:padding="15dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
@@ -79,13 +130,24 @@
             android:src="@drawable/ic_palette_white_24dp"
             android:padding="15dp"
             android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/main_stroke_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_gesture_white_24dp"
+            android:src="@drawable/ic_line_weight_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/main_manipulate_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_crop_free_white_24dp"
             android:padding="15dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
@@ -95,15 +157,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_undo_white_24dp"
-            android:padding="15dp"
-            android:clickable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-
-        <ImageView
-            android:id="@+id/main_redo_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_redo_white_24dp"
             android:padding="15dp"
             android:clickable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>

@@ -12,7 +12,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import co.martinbaciga.drawingtest.R;
+import co.martinbaciga.drawingtest.infrastructure.manager.SharedPreferencesManager;
 import co.martinbaciga.drawingtest.ui.interfaces.ManipulableViewEventListener;
+import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
 import co.martinbaciga.drawingtest.ui.util.SystemUtils;
 
 public abstract class ManipulableView extends FrameLayout
@@ -47,6 +49,8 @@ public abstract class ManipulableView extends FrameLayout
 	private boolean mRotationEnabled = false;
 	private boolean mControlsHidden = false;
 
+	private Context mContext;
+
 	private GestureDetector mGestureDetector;
 
 	private ManipulableViewEventListener mEventListener;
@@ -54,6 +58,7 @@ public abstract class ManipulableView extends FrameLayout
 	public ManipulableView(Context context, ManipulableViewEventListener listener)
 	{
 		super(context);
+		mContext = context;
 		mEventListener = listener;
 		init(context);
 	}
@@ -204,6 +209,9 @@ public abstract class ManipulableView extends FrameLayout
 					manageScaleMotionEvents(event);
 				}
 
+				return true;
+			} else if (SharedPreferencesManager.getBoolean(mContext, CanvasManager.SHARED_PREFERENCES_KEY_MANIPULABLE_ENABLED))
+			{
 				mGestureDetector.onTouchEvent(event);
 
 				return true;
@@ -216,8 +224,9 @@ public abstract class ManipulableView extends FrameLayout
 	private class GestureListener extends GestureDetector.SimpleOnGestureListener
 	{
 		@Override
-		public boolean onDoubleTap(MotionEvent e) {
-			setControlItemsHidden(!mControlsHidden);
+		public boolean onSingleTapConfirmed(MotionEvent e)
+		{
+			mEventListener.onTap(ManipulableView.this);
 			return true;
 		}
 	}
