@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -48,6 +49,7 @@ public class CanvasManager
 
 	private Firebase mBoardRef;
 	private Firebase mBackgroundRef;
+	private Firebase mBackgroundImageRef;
 	private Firebase mSegmentsRef;
 
 	private Set<String> mOutstandingSegments = new HashSet<>();
@@ -251,9 +253,10 @@ public class CanvasManager
 		saveBackgroundColorChange();
 	}
 
-	public void setBackgroundImage(String uri)
+	public void setBackgroundImage(String url)
 	{
-		mBackgroundImageView.setImageURI(Uri.parse(uri));
+		changeBackgroundImage(url);
+		saveBackgroundImageChange(url);
 	}
 
 	// TODO Refactor this
@@ -277,6 +280,10 @@ public class CanvasManager
 				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
 				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
 
+		mBackgroundImageRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND_IMAGE);
+
 		mSegmentsRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
 				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
 				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
@@ -294,6 +301,11 @@ public class CanvasManager
 				if (board != null)
 				{
 					setBackgroundColor(board.getBackgroundColor());
+
+					if (board.getBackgroundImageUrl() != null && !board.getBackgroundImageUrl().matches(""))
+					{
+						changeBackgroundImage(board.getBackgroundImageUrl());
+					}
 				} else
 				{
 					saveBoard();
@@ -506,9 +518,30 @@ public class CanvasManager
 		}
 	};
 
+	private void changeBackgroundImage(String url)
+	{
+		Glide.with(mContext).load(url).into(mBackgroundImageView);
+	}
+
 	private void saveBackgroundColorChange()
 	{
 		mBackgroundRef.setValue(mBackgroundColor, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
+			}
+		});
+	}
+
+	private void saveBackgroundImageChange(String url)
+	{
+		mBackgroundImageRef.setValue(url, new Firebase.CompletionListener()
 		{
 			@Override
 			public void onComplete(FirebaseError error, Firebase firebaseRef)

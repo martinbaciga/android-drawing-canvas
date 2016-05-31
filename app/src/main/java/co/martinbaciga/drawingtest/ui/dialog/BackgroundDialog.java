@@ -100,8 +100,9 @@ public class BackgroundDialog extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-				String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DrawingCanvas/freedom-beach.jpg";
-				mOnBackgroundSelectedListener.onImageSelected(filePath);
+				/*String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DrawingCanvas/freedom-beach.jpg";
+				mOnBackgroundSelectedListener.onImageSelected(filePath);*/
+				mOnBackgroundSelectedListener.onImageSelected("https://graphicflip.com/wp-content/uploads/2016/02/40-backgrounds-material.jpg");
 			}
 		});
 	}
@@ -114,6 +115,6 @@ public class BackgroundDialog extends DialogFragment
 	public interface OnBackgroundSelectedListener
 	{
 		public void onColorSelected(int color);
-		public void onImageSelected(String uri);
+		public void onImageSelected(String url);
 	}
 }

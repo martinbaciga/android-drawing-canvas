@@ -154,9 +154,9 @@ public class MainActivity extends AppCompatActivity
 			}
 
 			@Override
-			public void onImageSelected(String uri)
+			public void onImageSelected(String url)
 			{
-				mCanvasManager.setBackgroundImage(uri);
+				mCanvasManager.setBackgroundImage(url);
 			}
 		});
 
