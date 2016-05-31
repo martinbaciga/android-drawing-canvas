@@ -21,6 +21,12 @@
             android:layout_gravity="center"
             android:background="@android:color/white">
 
+            <ImageView
+                android:id="@+id/main_canvas_background_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+
             <co.martinbaciga.drawingtest.ui.component.DrawingView
                 android:id="@+id/main_drawing_view"
                 android:layout_width="match_parent"

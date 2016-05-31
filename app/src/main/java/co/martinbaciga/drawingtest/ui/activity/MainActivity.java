@@ -30,6 +30,7 @@ import co.martinbaciga.drawingtest.ui.manager.CanvasMenuManager;
 public class MainActivity extends AppCompatActivity
 {
 	@Bind(R.id.container) FrameLayout mContainer;
+	@Bind(R.id.main_canvas_background_iv) ImageView mBackgroundImageView;
 	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
 
 	@Bind(R.id.main_text_iv) ImageView mTextImageView;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity
 				mPaintImageView, mImageImageView, mFillBackgroundImageView, mColorImageView, mStrokeImageView, mManipulateImageView, mUndoImageView
 		);
 
-		mCanvasManager = new CanvasManager(this, mContainer, mDrawingView, canvasMenuManager);
+		mCanvasManager = new CanvasManager(this, mContainer, mBackgroundImageView, mDrawingView, canvasMenuManager);
 
 		/*mDrawingView.setEnabled(false);
 

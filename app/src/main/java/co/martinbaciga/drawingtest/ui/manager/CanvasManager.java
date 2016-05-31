@@ -3,9 +3,11 @@ package co.martinbaciga.drawingtest.ui.manager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -37,6 +39,7 @@ public class CanvasManager
 
 	private static final float TEXT_SIZE = 5;
 	private int mBackgroundColor = Color.WHITE;
+	private ImageView mBackgroundImageView;
 
 	private LayerManager mLayerManager;
 	private CanvasMenuManager mCanvasMenuManager;
@@ -52,10 +55,11 @@ public class CanvasManager
 	private boolean mManipulateEnabled = false;
 	private String mManipulableViewEnabledId;
 
-	public CanvasManager(Context context, FrameLayout root, DrawingView baseDrawingView, CanvasMenuManager canvasMenuManager)
+	public CanvasManager(Context context, FrameLayout root, ImageView backgroundImageView, DrawingView baseDrawingView, CanvasMenuManager canvasMenuManager)
 	{
 		mCanvasMenuManager = canvasMenuManager;
 		mLayerManager = new LayerManager(context, root, baseDrawingView);
+		mBackgroundImageView = backgroundImageView;
 		mBaseDrawingView = baseDrawingView;
 		mContext = context;
 
@@ -237,13 +241,11 @@ public class CanvasManager
 
 	public int getBackgroundColor()
 	{
-		//return mLayerManager.getTopDrawingView().getBackgroundColor();
 		return mBackgroundColor;
 	}
 
 	public void setBackgroundColor(int color)
 	{
-		//mLayerManager.getTopDrawingView().setBackgroundColor(color);
 		mBackgroundColor = color;
 		mLayerManager.getRoot().setBackgroundColor(color);
 		saveBackgroundColorChange();
@@ -251,7 +253,7 @@ public class CanvasManager
 
 	public void setBackgroundImage(String uri)
 	{
-		//mLayerManager.getBaseDrawingView().setBackgroundImage(uri);
+		mBackgroundImageView.setImageURI(Uri.parse(uri));
 	}
 
 	// TODO Refactor this
@@ -334,7 +336,7 @@ public class CanvasManager
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								mEventLister, segmentId);
-						
+
 						mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 					}
 				}
