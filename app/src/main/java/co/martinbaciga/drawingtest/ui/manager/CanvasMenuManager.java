@@ -14,7 +14,7 @@ public class CanvasMenuManager
 	private ArrayList<ImageView> mPaintOptions = new ArrayList<>();
 
 	public CanvasMenuManager(ImageView textImageView, ImageView textFontImageView, ImageView textColorImageView, ImageView textAlignLeftImageView, ImageView textAlignCenterImageView, ImageView textAlignRightImageView,
-							 ImageView paintImageView, ImageView imageImageView, ImageView fillBackgroundImageView, ImageView colorImageView, ImageView strokeImageView, ImageView manipulateImageView, ImageView undoImageView)
+							 ImageView paintImageView, ImageView imageImageView, ImageView fillBackgroundImageView, ImageView colorImageView, ImageView strokeImageView, ImageView opacityImageView, ImageView manipulateImageView, ImageView undoImageView)
 	{
 		mManipulableOption = manipulateImageView;
 
@@ -33,6 +33,7 @@ public class CanvasMenuManager
 
 		mPaintOptions.add(colorImageView);
 		mPaintOptions.add(strokeImageView);
+		mPaintOptions.add(opacityImageView);
 	}
 
 	public void showTextOptions()

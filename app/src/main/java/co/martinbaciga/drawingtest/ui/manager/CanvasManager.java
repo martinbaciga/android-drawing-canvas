@@ -236,6 +236,16 @@ public class CanvasManager
 		mLayerManager.getTopDrawingView().setPaintColor(color);
 	}
 
+	public void setPaintOpacity(int opacity)
+	{
+		mLayerManager.getTopDrawingView().setOpacity(opacity);
+	}
+
+	public int getPaintOpacity()
+	{
+		return mLayerManager.getTopDrawingView().getOpacity();
+	}
+
 	public int getTextColor()
 	{
 		return ((ManipulableTextView)mLayerManager.getManipulableView(mManipulableViewEnabledId)).getTextColor();

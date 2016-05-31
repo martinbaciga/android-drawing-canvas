@@ -54,6 +54,7 @@ public class DrawingView extends View
 	// Set default values
 	private int mPaintColor = Color.BLACK;
 	private int mStrokeWidth = 2;
+	private int mOpacity = 255;
 	private boolean mEnabled = true;
 
 	// Firebase
@@ -104,7 +105,7 @@ public class DrawingView extends View
 
 				if (!mOutstandingSegments.contains(name) && segment.getType().matches(Segment.TYPE_LINE) && mEnabled)
 				{
-					drawSegment(segment, createPaint(segment.getColor(), segment.getStrokeWidth()), dataSnapshot.getKey());
+					drawSegment(segment, createPaint(segment.getColor(), segment.getStrokeWidth(), segment.getOpacity()), dataSnapshot.getKey());
 					invalidate();
 				}
 			}
@@ -148,6 +149,7 @@ public class DrawingView extends View
 		mDrawPaint.setAntiAlias(true);
 		mDrawPaint.setDither(true);
 		mDrawPaint.setStrokeWidth(mStrokeWidth * mScale);
+		mDrawPaint.setAlpha(mOpacity);
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -161,13 +163,14 @@ public class DrawingView extends View
 		}
 	}
 
-	private Paint createPaint(int color, int strokeWidth)
+	private Paint createPaint(int color, int strokeWidth, int opacity)
 	{
 		Paint p = new Paint();
 		p.setColor(color);
 		p.setAntiAlias(true);
 		p.setDither(true);
 		p.setStrokeWidth(strokeWidth * mScale);
+		p.setAlpha(opacity);
 		p.setStyle(Paint.Style.STROKE);
 		p.setStrokeJoin(Paint.Join.ROUND);
 		p.setStrokeCap(Paint.Cap.ROUND);
@@ -456,6 +459,17 @@ public class DrawingView extends View
 	public int getStrokeWidth()
 	{
 		return mStrokeWidth;
+	}
+
+	public void setOpacity(int opacity)
+	{
+		mOpacity = opacity;
+		mDrawPaint.setAlpha(mOpacity);
+	}
+
+	public int getOpacity()
+	{
+		return mOpacity;
 	}
 
 	public Bitmap getBitmap()

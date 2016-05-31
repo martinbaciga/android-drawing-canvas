@@ -141,6 +141,16 @@
             android:visibility="gone"/>
 
         <ImageView
+            android:id="@+id/main_opacity_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_opacity_white_24dp"
+            android:padding="15dp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"/>
+
+        <ImageView
             android:id="@+id/main_stroke_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

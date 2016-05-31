@@ -22,6 +22,7 @@ import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
 import co.martinbaciga.drawingtest.ui.dialog.BackgroundDialog;
 import co.martinbaciga.drawingtest.ui.dialog.ColorDialog;
+import co.martinbaciga.drawingtest.ui.dialog.OpacityDialog;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 	@Bind(R.id.main_image_iv) ImageView mImageImageView;
 	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
 	@Bind(R.id.main_color_iv) ImageView mColorImageView;
+	@Bind(R.id.main_opacity_iv) ImageView mOpacityImageView;
 	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
 	@Bind(R.id.main_manipulate_iv) ImageView mManipulateImageView;
 	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity
 
 		CanvasMenuManager canvasMenuManager = new CanvasMenuManager(
 				mTextImageView, mTextFontImageView, mTextColorImageView, mTextAlignLeftImageView, mTextAlignCenterImageView, mTextAlignRightImageView,
-				mPaintImageView, mImageImageView, mFillBackgroundImageView, mColorImageView, mStrokeImageView, mManipulateImageView, mUndoImageView
+				mPaintImageView, mImageImageView, mFillBackgroundImageView, mColorImageView, mStrokeImageView, mOpacityImageView, mManipulateImageView, mUndoImageView
 		);
 
 		mCanvasManager = new CanvasManager(this, mContainer, mBackgroundImageView, mDrawingView, canvasMenuManager);
@@ -229,6 +231,22 @@ public class MainActivity extends AppCompatActivity
 		dialog.show(getSupportFragmentManager(), "StrokeSelectorDialog");
 	}
 
+	private void startOpacityDialog()
+	{
+		OpacityDialog dialog = OpacityDialog.newInstance(mCanvasManager.getPaintColor(), mCanvasManager.getPaintOpacity());
+
+		dialog.setOnOpacitySelectedListener(new OpacityDialog.OnOpacitySelectedListener()
+		{
+			@Override
+			public void onOpacitySelected(int opacity)
+			{
+				mCanvasManager.setPaintOpacity(opacity);
+			}
+		});
+
+		dialog.show(getSupportFragmentManager(), "StrokeSelectorDialog");
+	}
+
 	private void startShareDialog(Uri uri)
 	{
 		Intent intent = new Intent();
@@ -334,6 +352,12 @@ public class MainActivity extends AppCompatActivity
 	public void onColorOptionClick()
 	{
 		startColorPickerDialog(CanvasManager.TARGET_PAINT);
+	}
+
+	@OnClick(R.id.main_opacity_iv)
+	public void onOpacityOptionClick()
+	{
+		startOpacityDialog();
 	}
 
 	@OnClick(R.id.main_stroke_iv)

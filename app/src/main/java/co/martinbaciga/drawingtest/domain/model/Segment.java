@@ -19,6 +19,7 @@ public class Segment
     private List<Point> points = new ArrayList<Point>();
     private int color;
     private int strokeWidth;
+	private int opacity;
 
 	// Text
 	private float x;
@@ -197,5 +198,15 @@ public class Segment
 	public void setAlignment(String alignment)
 	{
 		this.alignment = alignment;
+	}
+
+	public int getOpacity()
+	{
+		return opacity;
+	}
+
+	public void setOpacity(int opacity)
+	{
+		this.opacity = opacity;
 	}
 }
