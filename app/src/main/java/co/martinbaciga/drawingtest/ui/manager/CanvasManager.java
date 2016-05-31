@@ -2,6 +2,7 @@ package co.martinbaciga.drawingtest.ui.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -10,6 +11,7 @@ import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import co.martinbaciga.drawingtest.domain.application.DrawingCanvasApplication;
+import co.martinbaciga.drawingtest.domain.model.Board;
 import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.infrastructure.FireBaseDBConstants;
 import co.martinbaciga.drawingtest.infrastructure.manager.SharedPreferencesManager;
@@ -33,12 +36,15 @@ public class CanvasManager
 	public static final int TARGET_TEXT = 2;
 
 	private static final float TEXT_SIZE = 5;
+	private int mBackgroundColor = Color.WHITE;
 
 	private LayerManager mLayerManager;
 	private CanvasMenuManager mCanvasMenuManager;
 	private DrawingView mBaseDrawingView;
 	private Context mContext;
 
+	private Firebase mBoardRef;
+	private Firebase mBackgroundRef;
 	private Firebase mSegmentsRef;
 
 	private Set<String> mOutstandingSegments = new HashSet<>();
@@ -231,12 +237,21 @@ public class CanvasManager
 
 	public int getBackgroundColor()
 	{
-		return mLayerManager.getTopDrawingView().getBackgroundColor();
+		//return mLayerManager.getTopDrawingView().getBackgroundColor();
+		return mBackgroundColor;
 	}
 
 	public void setBackgroundColor(int color)
 	{
-		mLayerManager.getTopDrawingView().setBackgroundColor(color);
+		//mLayerManager.getTopDrawingView().setBackgroundColor(color);
+		mBackgroundColor = color;
+		mLayerManager.getRoot().setBackgroundColor(color);
+		saveBackgroundColorChange();
+	}
+
+	public void setBackgroundImage(String uri)
+	{
+		//mLayerManager.getBaseDrawingView().setBackgroundImage(uri);
 	}
 
 	// TODO Refactor this
@@ -252,6 +267,14 @@ public class CanvasManager
 
 	private void initRefs()
 	{
+		mBoardRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD);
+
+		mBackgroundRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
+				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
+				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
+
 		mSegmentsRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
 				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
 				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
@@ -259,6 +282,29 @@ public class CanvasManager
 
 	private void initCallbacks()
 	{
+		mBoardRef.addValueEventListener(new ValueEventListener()
+		{
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot)
+			{
+				Board board = dataSnapshot.getValue(Board.class);
+
+				if (board != null)
+				{
+					setBackgroundColor(board.getBackgroundColor());
+				} else
+				{
+					saveBoard();
+				}
+			}
+
+			@Override
+			public void onCancelled(FirebaseError firebaseError)
+			{
+				// No-op
+			}
+		});
+
 		mSegmentsRef.addChildEventListener(new ChildEventListener()
 		{
 			@Override
@@ -279,6 +325,8 @@ public class CanvasManager
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								segment.getAlignment(),
 								mEventLister, segmentId);
+
+						mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 					} else if (segment.getType().matches(Segment.TYPE_IMAGE))
 					{
 						mLayerManager.addImageComponent(segment.getUrl(),
@@ -286,9 +334,9 @@ public class CanvasManager
 								(int)(segment.getWidth() * mBaseDrawingView.getScale()),
 								(int)(segment.getHeight() * mBaseDrawingView.getScale()),
 								mEventLister, segmentId);
+						
+						mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 					}
-
-					mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
 				}
 			}
 
@@ -330,7 +378,12 @@ public class CanvasManager
 				if (!mOutstandingSegments.contains(segmentId))
 				{
 					mLayerManager.removeManipulableView(segmentId);
-					mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
+					if (mLayerManager.getTopManipulableView() != null)
+					{
+						mManipulableViewEnabledId = mLayerManager.getTopManipulableView().getSegmentId();
+					} else {
+						mManipulableViewEnabledId = null;
+					}
 				}
 			}
 
@@ -344,6 +397,24 @@ public class CanvasManager
 			public void onCancelled(FirebaseError firebaseError)
 			{
 
+			}
+		});
+	}
+
+	private void saveBoard()
+	{
+		Board board = new Board(mBackgroundColor);
+
+		mBoardRef.setValue(board, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
 			}
 		});
 	}
@@ -432,4 +503,20 @@ public class CanvasManager
 			}
 		}
 	};
+
+	private void saveBackgroundColorChange()
+	{
+		mBackgroundRef.setValue(mBackgroundColor, new Firebase.CompletionListener()
+		{
+			@Override
+			public void onComplete(FirebaseError error, Firebase firebaseRef)
+			{
+				if (error != null)
+				{
+					Log.e("AndroidDrawing", error.toString());
+					throw error.toException();
+				}
+			}
+		});
+	}
 }

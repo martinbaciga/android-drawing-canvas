@@ -2,6 +2,7 @@ package co.martinbaciga.drawingtest.ui.component;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,6 +20,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,6 @@ public class DrawingView extends View
 	private int mLastY;
 
 	private Path mDrawPath;
-	private Paint mBackgroundPaint;
 	private Paint mDrawPaint;
 	private Canvas mDrawCanvas;
 	private Bitmap mCanvasBitmap;
@@ -51,26 +52,20 @@ public class DrawingView extends View
 	private ArrayList<ExtendedPath> mUndoneExtendedPaths = new ArrayList<>();
 
 	// Set default values
-	private int mBackgroundColor = Color.WHITE;
 	private int mPaintColor = Color.BLACK;
 	private int mStrokeWidth = 2;
 	private boolean mEnabled = true;
-	private boolean mNoBackground = false;
 
 	// Firebase
-	private Firebase mBoardRef;
-	private Firebase mBackgroundRef;
 	private Firebase mSegmentsRef;
-	private ValueEventListener mBoardListener;
 	private ChildEventListener mSegmentsListener;
 	private Segment mCurrentSegment;
 	private Set<String> mOutstandingSegments;
 	private boolean mCleaningBoard = false;
 
-	public DrawingView(Context context, boolean noBackground)
+	public DrawingView(Context context)
 	{
 		super(context);
-		mNoBackground = noBackground;
 		init();
 	}
 
@@ -83,59 +78,22 @@ public class DrawingView extends View
 	private void init()
 	{
 		mDrawPath = new Path();
-		mBackgroundPaint = new Paint();
 		mOutstandingSegments = new HashSet<>();
 		initPaint();
 		initFirebaseRefs();
-		if (!mNoBackground)
-		{
-			syncBoard();
-		}
+
+		syncBoard();
 	}
 
 	private void initFirebaseRefs()
 	{
-		mBoardRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
-				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
-				.child(FireBaseDBConstants.FIREBASE_DB_BOARD);
-
 		mSegmentsRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
 				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
 				.child(FireBaseDBConstants.FIREBASE_DB_SEGMENTS);
-
-		mBackgroundRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
-				.child(FireBaseDBConstants.FIREBASE_DB_TEST_MARTIN)
-				.child(FireBaseDBConstants.FIREBASE_DB_BOARD).child(FireBaseDBConstants.FIREBASE_DB_BOARD_BACKGROUND);
 	}
 
 	public void syncBoard()
 	{
-		if (!mNoBackground)
-		{
-			mBoardListener = mBoardRef.addValueEventListener(new ValueEventListener()
-			{
-				@Override
-				public void onDataChange(DataSnapshot dataSnapshot)
-				{
-					Board board = dataSnapshot.getValue(Board.class);
-
-					if (board != null)
-					{
-						setBackgroundColor(board.getBackgroundColor());
-					} else
-					{
-						saveBoard();
-					}
-				}
-
-				@Override
-				public void onCancelled(FirebaseError firebaseError)
-				{
-					// No-op
-				}
-			});
-		}
-
 		mSegmentsListener = mSegmentsRef.addChildEventListener(new ChildEventListener()
 		{
 			@Override
@@ -183,24 +141,6 @@ public class DrawingView extends View
 		});
 	}
 
-	private void saveBoard()
-	{
-		Board board = new Board(mBackgroundColor);
-
-		mBoardRef.setValue(board, new Firebase.CompletionListener()
-		{
-			@Override
-			public void onComplete(FirebaseError error, Firebase firebaseRef)
-			{
-				if (error != null)
-				{
-					Log.e("AndroidDrawing", error.toString());
-					throw error.toException();
-				}
-			}
-		});
-	}
-
 	private void initPaint()
 	{
 		mDrawPaint = new Paint();
@@ -211,13 +151,6 @@ public class DrawingView extends View
 		mDrawPaint.setStyle(Paint.Style.STROKE);
 		mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
 		mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-	}
-
-	private void drawBackground(Canvas canvas, float width, float height)
-	{
-		mBackgroundPaint.setColor(mBackgroundColor);
-		mBackgroundPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-		canvas.drawRect(0, 0, width, height, mBackgroundPaint);
 	}
 
 	private void drawPaths(Canvas canvas)
@@ -289,7 +222,6 @@ public class DrawingView extends View
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		drawBackground(canvas, mCanvasBitmap.getWidth(), mCanvasBitmap.getHeight());
 		drawPaths(canvas);
 
 		canvas.drawPath(mDrawPath, mDrawPaint);
@@ -449,25 +381,6 @@ public class DrawingView extends View
 		return segmentId;
 	}
 
-	private void saveBackgroundColorChange()
-	{
-		if (!mNoBackground)
-		{
-			mBackgroundRef.setValue(mBackgroundColor, new Firebase.CompletionListener()
-			{
-				@Override
-				public void onComplete(FirebaseError error, Firebase firebaseRef)
-				{
-					if (error != null)
-					{
-						Log.e("AndroidDrawing", error.toString());
-						throw error.toException();
-					}
-				}
-			});
-		}
-	}
-
 	private void removeSegments()
 	{
 		mCleaningBoard = true;
@@ -508,7 +421,6 @@ public class DrawingView extends View
 
 	public void clearListeners()
 	{
-		mBoardRef.removeEventListener(mBoardListener);
 		mSegmentsRef.removeEventListener(mSegmentsListener);
 	}
 
@@ -546,23 +458,8 @@ public class DrawingView extends View
 		return mStrokeWidth;
 	}
 
-	public void setBackgroundColor(int color)
-	{
-		mBackgroundColor = color;
-		mBackgroundPaint.setColor(mBackgroundColor);
-		invalidate();
-
-		saveBackgroundColorChange();
-	}
-
-	public int getBackgroundColor()
-	{
-		return mBackgroundColor;
-	}
-
 	public Bitmap getBitmap()
 	{
-		drawBackground(mDrawCanvas, mCanvasBitmap.getWidth(), mCanvasBitmap.getHeight());
 		drawPaths(mDrawCanvas);
 		return mCanvasBitmap;
 	}

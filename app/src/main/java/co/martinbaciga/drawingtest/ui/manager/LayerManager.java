@@ -3,10 +3,12 @@ package co.martinbaciga.drawingtest.ui.manager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -224,7 +226,7 @@ public class LayerManager
 
 	public void addDrawingLayer()
 	{
-		DrawingView drawingView = new DrawingView(mContext, true);
+		DrawingView drawingView = new DrawingView(mContext);
 		mRoot.addView(drawingView);
 		drawingView.setBackgroundColor(Color.TRANSPARENT);
 
@@ -267,12 +269,19 @@ public class LayerManager
 
 	public ManipulableView getTopManipulableView()
 	{
-		return mManipulableViews.get(mManipulableViews.size()-1);
+		if (mManipulableViews.size() > 0)
+			return mManipulableViews.get(mManipulableViews.size()-1);
+		return null;
 	}
 
 	public DrawingView getTopDrawingView()
 	{
 		return mDrawingViews.get(mDrawingViews.size()-1);
+	}
+
+	public DrawingView getBaseDrawingView()
+	{
+		return mBaseDrawingView;
 	}
 
 	public void enableTopDrawingView()

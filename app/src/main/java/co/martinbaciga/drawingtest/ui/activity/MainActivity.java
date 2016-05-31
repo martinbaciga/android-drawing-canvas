@@ -2,9 +2,6 @@ package co.martinbaciga.drawingtest.ui.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,9 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.xdty.preference.colorpicker.ColorPickerDialog;
-import org.xdty.preference.colorpicker.ColorPickerSwatch;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,15 +20,12 @@ import co.martinbaciga.drawingtest.domain.manager.FileManager;
 import co.martinbaciga.drawingtest.domain.manager.PermissionManager;
 import co.martinbaciga.drawingtest.domain.model.Segment;
 import co.martinbaciga.drawingtest.ui.component.DrawingView;
-import co.martinbaciga.drawingtest.ui.component.ManipulableImageView;
-import co.martinbaciga.drawingtest.ui.component.ManipulableTextView;
+import co.martinbaciga.drawingtest.ui.dialog.BackgroundDialog;
 import co.martinbaciga.drawingtest.ui.dialog.ColorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 import co.martinbaciga.drawingtest.ui.dialog.TextDialog;
 import co.martinbaciga.drawingtest.ui.manager.CanvasManager;
 import co.martinbaciga.drawingtest.ui.manager.CanvasMenuManager;
-import co.martinbaciga.drawingtest.ui.manager.LayerManager;
-import co.martinbaciga.drawingtest.ui.util.UiUtils;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -151,26 +142,24 @@ public class MainActivity extends AppCompatActivity
 
 	private void startFillBackgroundDialog()
 	{
-		int[] colors = getResources().getIntArray(R.array.palette);
+		BackgroundDialog dialog = BackgroundDialog.newInstance(mCanvasManager.getBackgroundColor());
 
-		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
-				colors,
-				mCanvasManager.getBackgroundColor(),
-				5,
-				ColorPickerDialog.SIZE_SMALL);
-
-		dialog.setOnColorSelectedListener(new ColorPickerSwatch.OnColorSelectedListener()
+		dialog.setOnColorSelectedListener(new BackgroundDialog.OnBackgroundSelectedListener()
 		{
-
 			@Override
 			public void onColorSelected(int color)
 			{
 				mCanvasManager.setBackgroundColor(color);
 			}
 
+			@Override
+			public void onImageSelected(String uri)
+			{
+				mCanvasManager.setBackgroundImage(uri);
+			}
 		});
 
-		dialog.show(getFragmentManager(), "ColorPickerDialog");
+		dialog.show(getSupportFragmentManager(), "ColorDialog");
 	}
 
 	private void startTextDialog()
