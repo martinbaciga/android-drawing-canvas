@@ -72,4 +72,22 @@ public class CanvasMenuManager
 			po.setVisibility(View.GONE);
 		}
 	}
+
+	public void showPaintOptions()
+	{
+		for (ImageView to : mTextOptions)
+		{
+			to.setVisibility(View.GONE);
+		}
+
+		for (ImageView bo : mBaseOptions)
+		{
+			bo.setVisibility(View.GONE);
+		}
+
+		for (ImageView po : mPaintOptions)
+		{
+			po.setVisibility(View.VISIBLE);
+		}
+	}
 }

@@ -270,6 +270,11 @@ public class LayerManager
 		return mManipulableViews.get(mManipulableViews.size()-1);
 	}
 
+	public DrawingView getTopDrawingView()
+	{
+		return mDrawingViews.get(mDrawingViews.size()-1);
+	}
+
 	public void enableTopDrawingView()
 	{
 		mDrawingViews.get(mDrawingViews.size()-1).setEnabled(true);

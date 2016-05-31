@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity
 				requestPermissionsAndSaveBitmap();
 				break;
 			case R.id.action_clear:
-				mDrawingView.clearCanvas();
+				mCanvasManager.clearCanvas();
 				break;
 		}
 
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
 
 		ColorPickerDialog dialog = ColorPickerDialog.newInstance(R.string.color_picker_default_title,
 				colors,
-				mDrawingView.getBackgroundColor(),
+				mCanvasManager.getBackgroundColor(),
 				5,
 				ColorPickerDialog.SIZE_SMALL);
 
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onColorSelected(int color)
 			{
-				mDrawingView.setBackgroundColor(color);
+				mCanvasManager.setBackgroundColor(color);
 			}
 
 		});
@@ -196,10 +196,10 @@ public class MainActivity extends AppCompatActivity
 		switch (target)
 		{
 			case CanvasManager.TARGET_PAINT:
-				dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
+				dialog = ColorDialog.newInstance(mCanvasManager.getPaintColor());
 				break;
 			case CanvasManager.TARGET_TEXT:
-				dialog = ColorDialog.newInstance(mDrawingView.getPaintColor());
+				dialog = ColorDialog.newInstance(mCanvasManager.getTextColor());
 				break;
 		}
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity
 				switch (target)
 				{
 					case CanvasManager.TARGET_PAINT:
-						mDrawingView.setPaintColor(color);
+						mCanvasManager.setPaintColor(color);
 						break;
 					case CanvasManager.TARGET_TEXT:
 						mCanvasManager.changeTextColor(color);
@@ -225,14 +225,14 @@ public class MainActivity extends AppCompatActivity
 
 	private void startStrokeSelectorDialog()
 	{
-		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mDrawingView.getStrokeWidth(), MAX_STROKE_WIDTH);
+		StrokeSelectorDialog dialog = StrokeSelectorDialog.newInstance(mCanvasManager.getStrokeWidth(), MAX_STROKE_WIDTH);
 
 		dialog.setOnStrokeSelectedListener(new StrokeSelectorDialog.OnStrokeSelectedListener()
 		{
 			@Override
 			public void onStrokeSelected(int stroke)
 			{
-				mDrawingView.setStrokeWidth(stroke);
+				mCanvasManager.setStrokeWidth(stroke);
 			}
 		});
 
@@ -255,9 +255,14 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this))
 		{
-			Uri uri = FileManager.saveBitmap(mCanvasManager.getCanvasBitmap());
-			startShareDialog(uri);
+			share();
 		}
+	}
+
+	private void share()
+	{
+		Uri uri = FileManager.saveBitmap(mCanvasManager.getCanvasBitmap());
+		startShareDialog(uri);
 	}
 
 	@Override
@@ -270,8 +275,7 @@ public class MainActivity extends AppCompatActivity
 			{
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
-					Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
-					startShareDialog(uri);
+					share();
 				} else
 				{
 					Toast.makeText(this, "The app was not allowed to write to your storage. Hence, it cannot function properly. Please consider granting it this permission", Toast.LENGTH_LONG).show();
@@ -314,6 +318,12 @@ public class MainActivity extends AppCompatActivity
 	public void onTextAlignRightClick()
 	{
 		mCanvasManager.changeTextAlign(Gravity.RIGHT, Segment.TEXT_ALIGN_RIGHT);
+	}
+
+	@OnClick(R.id.main_paint_iv)
+	public void onPaintOptionClick()
+	{
+		mCanvasManager.showPaintOptions();
 	}
 
 	@OnClick(R.id.main_image_iv)

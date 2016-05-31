@@ -204,6 +204,52 @@ public class CanvasManager
 		return UiUtils.getBitmapFromView(mLayerManager.getRoot());
 	}
 
+	public int getStrokeWidth()
+	{
+		return mLayerManager.getTopDrawingView().getStrokeWidth();
+	}
+
+	public void setStrokeWidth(int strokeWidth)
+	{
+		mLayerManager.getTopDrawingView().setStrokeWidth(strokeWidth);
+	}
+
+	public int getPaintColor()
+	{
+		return mLayerManager.getTopDrawingView().getPaintColor();
+	}
+
+	public void setPaintColor(int color)
+	{
+		mLayerManager.getTopDrawingView().setPaintColor(color);
+	}
+
+	public int getTextColor()
+	{
+		return ((ManipulableTextView)mLayerManager.getManipulableView(mManipulableViewEnabledId)).getTextColor();
+	}
+
+	public int getBackgroundColor()
+	{
+		return mLayerManager.getTopDrawingView().getBackgroundColor();
+	}
+
+	public void setBackgroundColor(int color)
+	{
+		mLayerManager.getTopDrawingView().setBackgroundColor(color);
+	}
+
+	// TODO Refactor this
+	public void clearCanvas()
+	{
+		mLayerManager.getTopDrawingView().clearCanvas();
+	}
+
+	public void showPaintOptions()
+	{
+		mCanvasMenuManager.showPaintOptions();
+	}
+
 	private void initRefs()
 	{
 		mSegmentsRef = DrawingCanvasApplication.getInstance().getFirebaseRef()
