@@ -38,10 +38,11 @@ public class Segment
     private Segment() {
     }
 
-    public Segment(String type, int color, int strokeWidth) {
+    public Segment(String type, int color, int strokeWidth, int opacity) {
 		this.type = type;
         this.color = color;
 		this.strokeWidth = strokeWidth;
+		this.opacity = opacity;
     }
 
 	public Segment(String type, float x, float y, float width, float height, String text, float textSize, int textColor, String alignment)
