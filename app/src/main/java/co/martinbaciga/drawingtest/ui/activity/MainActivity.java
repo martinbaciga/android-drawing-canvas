@@ -14,7 +14,7 @@ import android.widget.Toast;
 import org.xdty.preference.colorpicker.ColorPickerDialog;
 import org.xdty.preference.colorpicker.ColorPickerSwatch;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import co.martinbaciga.drawingtest.R;
@@ -25,12 +25,12 @@ import co.martinbaciga.drawingtest.ui.dialog.StrokeSelectorDialog;
 
 public class MainActivity extends AppCompatActivity
 {
-	@Bind(R.id.main_drawing_view) DrawingView mDrawingView;
-	@Bind(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
-	@Bind(R.id.main_color_iv) ImageView mColorImageView;
-	@Bind(R.id.main_stroke_iv) ImageView mStrokeImageView;
-	@Bind(R.id.main_undo_iv) ImageView mUndoImageView;
-	@Bind(R.id.main_redo_iv) ImageView mRedoImageView;
+	@BindView(R.id.main_drawing_view) DrawingView mDrawingView;
+	@BindView(R.id.main_fill_iv) ImageView mFillBackgroundImageView;
+	@BindView(R.id.main_color_iv) ImageView mColorImageView;
+	@BindView(R.id.main_stroke_iv) ImageView mStrokeImageView;
+	@BindView(R.id.main_undo_iv) ImageView mUndoImageView;
+	@BindView(R.id.main_redo_iv) ImageView mRedoImageView;
 
 	private int mCurrentBackgroundColor;
 	private int mCurrentColor;
