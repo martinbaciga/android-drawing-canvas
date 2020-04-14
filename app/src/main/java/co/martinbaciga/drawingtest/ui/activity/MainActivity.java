@@ -1,5 +1,7 @@
 package co.martinbaciga.drawingtest.ui.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -63,7 +65,18 @@ public class MainActivity extends AppCompatActivity
 				requestPermissionsAndSaveBitmap();
 				break;
 			case R.id.action_clear:
-				mDrawingView.clearCanvas();
+				new AlertDialog.Builder(this)
+						.setTitle("Clear canvas")
+						.setMessage("Are you sure you want to clear the canvas?")
+						.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+						{
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								mDrawingView.clearCanvas();
+							}
+						})
+						.setNegativeButton("Cancel", null)
+						.show();
 				break;
 		}
 

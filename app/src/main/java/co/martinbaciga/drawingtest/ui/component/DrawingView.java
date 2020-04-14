@@ -24,8 +24,6 @@ public class DrawingView extends View
 	private ArrayList<Paint> mPaints = new ArrayList<>();
 	private ArrayList<Path> mUndonePaths = new ArrayList<>();
 	private ArrayList<Paint> mUndonePaints = new ArrayList<>();
-    	private ArrayList<Path> mLastPaths = new ArrayList<>();
-    	private ArrayList<Paint> mLastPaints = new ArrayList<>();
 
 	// Set default values
 	private int mBackgroundColor = 0xFFFFFFFF;
@@ -101,9 +99,7 @@ public class DrawingView extends View
 		switch (event.getAction())
 		{
 			case MotionEvent.ACTION_DOWN:
-				mDrawPath.reset();
-                		mDrawPath.moveTo(touchX, touchY);
-                		mUndonePaths.clear();
+				mDrawPath.moveTo(touchX, touchY);
 				//mDrawPath.addCircle(touchX, touchY, mStrokeWidth/10, Path.Direction.CW);
 				break;
 			case MotionEvent.ACTION_MOVE:
@@ -126,27 +122,12 @@ public class DrawingView extends View
 
 	public void clearCanvas()
 	{
-		//for only last deleted path
-		mLastPaths.clear();
-		mLastPaints.clear();
-
-		if (mPaths.size() > 0) {
-		    for (Path p : mPaths) {
-			mLastPaths.add(p);
-		    }
-		    if (mPaints.size() > 0){
-			for (Paint p : mPaints){
-			    mLastPaints.add(p);
-			}
-		    }
-
-		    mPaths.clear();
-		    mPaints.clear();
-		    mUndonePaths.clear();
-		    mUndonePaints.clear();
-		    mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-		    invalidate();
-		}
+		mPaths.clear();
+		mPaints.clear();
+		mUndonePaths.clear();
+		mUndonePaints.clear();
+		mDrawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+		invalidate();
 	}
 
 	public void setPaintColor(int color)
@@ -179,19 +160,9 @@ public class DrawingView extends View
 	{
 		if (mPaths.size() > 0)
 		{
-		    mUndonePaths.add(mPaths.remove(mPaths.size() - 1));
-		    mUndonePaints.add(mPaints.remove(mPaints.size() - 1));
-		    invalidate();
-		}else if (mLastPaths.size() > 0){
-		    for (Path p : mLastPaths){
-			mPaths.add(p);
-		    }
-		    if (mLastPaints.size() > 0) {
-			for (Paint p : mLastPaints) {
-			    mPaints.add(p);
-			}
-		    }
-		    invalidate();
+			mUndonePaths.add(mPaths.remove(mPaths.size() - 1));
+			mUndonePaints.add(mPaints.remove(mPaints.size() - 1));
+			invalidate();
 		}
 	}
 
