@@ -1,8 +1,10 @@
 package co.martinbaciga.drawingtest.domain.manager;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +13,7 @@ import java.util.Date;
 
 public class FileManager
 {
-	public static Uri saveBitmap(Bitmap bitmap)
+	public static Uri saveBitmap(Context context, Bitmap bitmap)
 	{
 		String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DrawingCanvas";
 		File dir = new File(file_path);
@@ -30,7 +32,8 @@ public class FileManager
 			bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
 			fOut.flush();
 			fOut.close();
-			return Uri.fromFile(file);
+			return FileProvider.getUriForFile(context,
+					context.getApplicationContext().getPackageName() + ".provider", file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity
 		intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
 		intent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 		intent.putExtra(Intent.EXTRA_STREAM, uri);
+		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		startActivity(Intent.createChooser(intent, "Share Image"));
 	}
 
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 	{
 		if (PermissionManager.checkWriteStoragePermissions(this))
 		{
-			Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+			Uri uri = FileManager.saveBitmap(this, mDrawingView.getBitmap());
 			startShareDialog(uri);
 		}
 	}
@@ -192,7 +193,7 @@ public class MainActivity extends AppCompatActivity
 			{
 				if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
-					Uri uri = FileManager.saveBitmap(mDrawingView.getBitmap());
+					Uri uri = FileManager.saveBitmap(this, mDrawingView.getBitmap());
 					startShareDialog(uri);
 				} else
 				{
